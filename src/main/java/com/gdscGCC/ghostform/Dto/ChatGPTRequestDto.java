@@ -1,0 +1,30 @@
+package com.gdscGCC.ghostform.Dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gdscGCC.ghostform.Entity.ChatGPTMessage;
+import lombok.*;
+
+import java.util.List;
+
+/** ChatGPT로 요청을 보내는 DTO */
+@Getter
+@ToString
+@NoArgsConstructor
+public class ChatGPTRequestDto {
+    private String model;
+    @JsonProperty("max_tokens")
+    private int maxTokens;
+    private double temperature;
+    private boolean stream;
+    private List<ChatGPTMessage> messages;
+
+    @Builder
+    public ChatGPTRequestDto(String model, int maxTokens, double temperature, boolean stream, List<ChatGPTMessage> messages) {
+        this.model = model;
+        this.maxTokens = maxTokens;
+        this.temperature = temperature;
+        this.stream = stream;
+        this.messages = messages;
+    }
+
+}
