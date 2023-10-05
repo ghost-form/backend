@@ -29,9 +29,8 @@ public class ChatGPTAPIController {
         ChatGPTResponseDto chatGptResponse = null;
         try {
             chatGptResponse = chatgptService.askQuestion(question);
-            System.out.println(chatGptResponse.getChoices());
         } catch (Exception e) {
-            System.out.println(e.toString());
+            log.warn(e.toString());
         }
 
         return chatGptResponse;
@@ -43,6 +42,7 @@ public class ChatGPTAPIController {
         try {
             return chatgptService.getChatGptStreamResponse(question);
         } catch (JsonProcessingException e) {
+            log.warn(e.toString());
             return Flux.empty();
         }
     }

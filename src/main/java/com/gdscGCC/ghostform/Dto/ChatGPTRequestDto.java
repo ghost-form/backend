@@ -11,11 +11,21 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class ChatGPTRequestDto {
+
+    /** 사용 모델 */
     private String model;
+
+    /** 최대 Token */
     @JsonProperty("max_tokens")
     private int maxTokens;
+
+    /** temperature */
     private double temperature;
+
+    /** stream */
     private boolean stream;
+
+    /** chatgpt에게 질문할 message */
     private List<ChatGPTMessage> messages;
 
     @Builder
