@@ -1,7 +1,6 @@
 package com.gdscGCC.ghostform.Dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gdscGCC.ghostform.Entity.ChatGPTMessage;
 import lombok.*;
 
 import java.util.List;

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.gdscGCC.ghostform.Config.ChatGPTConfig;
 import com.gdscGCC.ghostform.Dto.ChatGPTRequestDto;
 import com.gdscGCC.ghostform.Dto.ChatGPTResponseDto;
-import com.gdscGCC.ghostform.Entity.ChatGPTMessage;
+import com.gdscGCC.ghostform.Dto.ChatGPTMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;

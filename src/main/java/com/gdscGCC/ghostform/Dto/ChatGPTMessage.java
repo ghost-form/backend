@@ -1,4 +1,4 @@
-package com.gdscGCC.ghostform.Entity;
+package com.gdscGCC.ghostform.Dto;
 
 import lombok.Builder;
 import lombok.Data;
