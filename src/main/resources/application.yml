@@ -1,5 +1,6 @@
-spring:
-  profiles:
-    active: local
-    include: secret
+chatgpt:
+  api_key : "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"
 
+logging:
+  file:
+    name: ${user.dir}/log/test.log
