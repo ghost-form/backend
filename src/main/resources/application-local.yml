@@ -1,0 +1,3 @@
+logging:
+  file:
+    name: ${user.dir}/log/test.log
