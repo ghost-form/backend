@@ -37,6 +37,9 @@ public class TemplateService {
         Template template = templateRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
 
         template.update(requestDto.getId(), requestDto.getName(), requestDto.getContent());
+        System.out.println("template id : " + template.getId());
+        System.out.println("template name : " + template.getName());
+        System.out.println("template content : " + template.getContent());
 
         return id;
     }

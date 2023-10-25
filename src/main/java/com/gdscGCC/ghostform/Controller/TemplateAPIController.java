@@ -1,13 +1,11 @@
 package com.gdscGCC.ghostform.Controller;
 
 import com.gdscGCC.ghostform.Dto.TemplateRequestDto;
-import com.gdscGCC.ghostform.Entity.Template;
 import com.gdscGCC.ghostform.Service.TemplateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,6 +28,7 @@ public class TemplateAPIController {
 
     @PutMapping("/api/v1/templates/{id}")
     public Long templateUpdate(@PathVariable Long id, @RequestBody TemplateRequestDto requestDto){
+        System.out.println("id는!!! : " + id);
         return templateService.update(id, requestDto);
     }
 }

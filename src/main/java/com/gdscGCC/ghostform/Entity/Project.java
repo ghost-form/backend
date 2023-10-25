@@ -46,4 +46,11 @@ public class Project {
         this.title = title;
         this.lastModifiedDate = lastModifiedDate;
     }
+
+    public void update(Long id, String description, String title, String lastModifiedDate){
+        this.id = id;
+        this.description = description;
+        this.title = title;
+        this.lastModifiedDate = lastModifiedDate;
+    }
 }

@@ -23,7 +23,7 @@ public class ProjectRequestDto {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public Project ToEntity(){
+    public Project toEntity(){
         return Project.builder()
                 .id(this.id)
                 .description(this.description)
