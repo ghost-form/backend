@@ -25,6 +25,9 @@ public class TemplateService {
     @Transactional
     public TemplateResponseDto findById(Long id){
         Template template = templateRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
+        System.out.println("template id : " + template.getId());
+        System.out.println("template name : " + template.getName());
+        System.out.println("template content : " + template.getContent());
         return new TemplateResponseDto(template);
     }
 
@@ -40,11 +43,9 @@ public class TemplateService {
 
     // DB에서 하나의 row 삭제
     @Transactional
-    public Long update(Long id, TemplateRequestDto requestDto){
+    public void delete(Long id){
         Template template = templateRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
-
-        template.update(requestDto.getId(), requestDto.getName(), requestDto.getContent());
-
-        return id;
+        templateRepository.deleteById(id);
+        System.out.println("template id : " + template.getId() + "template was deleted.");
     }
 }
