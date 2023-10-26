@@ -1,8 +1,6 @@
 package com.gdscGCC.ghostform.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,23 +17,33 @@ public class Template {
     @GeneratedValue
     /** 템플릿 번호 */
     private Long id;
+
     /** 템플릿 이름 */
     private String name;
+
     /** 템플릿 전체 내용 */
     private String content;
+
+    /** 프로젝트 번호 */
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
 //    /** 프롬프트 변수들 */
 //    private List<String> variables;
 
     @Builder
-    public Template(Long id, String name, String content){
+    public Template(Long id, String name, String content, Project project){
         this.id = id;
         this.name = name;
         this.content = content;
+        this.project = project;
     }
 
-    public void update(Long id, String name, String content){
+    public void update(Long id, String name, String content, Project project){
         this.id = id;
         this.name = name;
         this.content = content;
+        this.project = project;
     }
 }

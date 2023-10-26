@@ -24,7 +24,7 @@ public class ProjectService {
     // DB에서 하나의 row 조회
     @Transactional
     public ProjectResponseDto findById(Long id){
-        Project project = projectRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
+        Project project = projectRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + id));
         System.out.println("project id : " + project.getId());
         System.out.println("project title : " + project.getTitle());
         System.out.println("project description : " + project.getDescription());
@@ -35,9 +35,9 @@ public class ProjectService {
     // DB에서 하나의 row 수정
     @Transactional
     public Long update(Long id, ProjectRequestDto requestDto){
-        Project project = projectRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
+        Project project = projectRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + id));
 
-        project.update(requestDto.getId(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getLastModifiedDate());
+        project.update(requestDto.getId(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getLastModifiedDate(), requestDto.getTemplates());
         System.out.println("project id : " + project.getId());
         System.out.println("project title : " + project.getTitle());
         System.out.println("project content : " + project.getDescription());
@@ -49,7 +49,7 @@ public class ProjectService {
     // DB에서 하나의 row 삭제
     @Transactional
     public void delete(Long id){
-        Project project = projectRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
+        Project project = projectRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + id));
         projectRepository.deleteById(id);
         System.out.println("project id : " + project.getId() + "project was deleted.");
     }

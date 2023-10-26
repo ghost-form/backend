@@ -6,26 +6,27 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class ProjectAPIController {
     private final ProjectService projectService;
+
+    @GetMapping("/projects/{id}")
+    public void projectGet(@PathVariable Long id){
+        projectService.findById(id);
+    }
 
     @PostMapping("/projects/save")
     public Long projectSave(@RequestBody ProjectRequestDto requestDto){
         return projectService.save(requestDto);
     }
 
-    @GetMapping("/projects/get")
-    public void projectGet(@RequestParam Long id){
-        projectService.findById(id);
-    }
-    @GetMapping("/projects/delete")
-    public void projectDelete(@RequestParam Long id){
+    @DeleteMapping("/projects/delete/{id}")
+    public void projectDelete(@PathVariable Long id){
         projectService.delete(id);
     }
 
-    @PutMapping("/api/v1/projects/{id}")
+    @PutMapping("/projects/{id}")
     public Long projectUpdate(@PathVariable Long id, @RequestBody ProjectRequestDto requestDto){
         System.out.println("id는!!! : " + id);
         return projectService.update(id, requestDto);
