@@ -1,18 +1,18 @@
-package com.gdscGCC.ghostform.Entity;
+package com.gdscGCC.ghostform.Dto;
 
-import jakarta.persistence.Entity;
+import com.gdscGCC.ghostform.Entity.User;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Entity
-@Data
 @Getter
-@Builder
-@AllArgsConstructor
+@ToString
 @NoArgsConstructor
-public class User {
+public class UserRequestDto {
+
     /** 사용자 번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +27,14 @@ public class User {
     /** 사용자 Email */
     private String email;
 
-    public void update(String newName, String newEmail) {
-        this.name = newName;
-        this.email = newEmail;
+    public User toEntity() {
+        return User.builder()
+                .ind_id(ind_id)
+                .name(name)
+                .id(id)
+                .password(password)
+                .email(email)
+                .build();
     }
+
 }
