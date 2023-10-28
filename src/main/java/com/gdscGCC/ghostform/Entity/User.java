@@ -1,10 +1,12 @@
 package com.gdscGCC.ghostform.Entity;
 
+import com.gdscGCC.ghostform.Dto.UserRequestDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Data
@@ -30,5 +32,14 @@ public class User {
     public void update(String newName, String newEmail) {
         this.name = newName;
         this.email = newEmail;
+    }
+
+    public static User newUserBuilder(UserRequestDto userRequestDto, PasswordEncoder passwordEncoder) {
+        return User.builder()
+                .id(userRequestDto.getId())
+                .password(passwordEncoder.encode(userRequestDto.getPassword()))
+                .name(userRequestDto.getName())
+                .email(userRequestDto.getEmail())
+                .build();
     }
 }

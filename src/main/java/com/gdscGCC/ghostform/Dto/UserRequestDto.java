@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @ToString
@@ -26,15 +27,5 @@ public class UserRequestDto {
     private String password;
     /** 사용자 Email */
     private String email;
-
-    public User toEntity() {
-        return User.builder()
-                .ind_id(ind_id)
-                .name(name)
-                .id(id)
-                .password(password)
-                .email(email)
-                .build();
-    }
 
 }

@@ -8,6 +8,7 @@ import com.gdscGCC.ghostform.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /** user의 id로 유저 정보를 찾는 서비스 */
     @Transactional
@@ -28,7 +30,7 @@ public class UserService {
     /** 회원가입 서비스 */
     @Transactional
     public UserResponseDto join(UserRequestDto userRequestDto) {
-        User newUser = userRequestDto.toEntity();
+        User newUser = User.newUserBuilder(userRequestDto, passwordEncoder);
         return new UserResponseDto(userRepository.save(newUser));
     }
 

@@ -15,12 +15,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Bean
     protected SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
-                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout((logout) -> logout
@@ -37,7 +37,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    //스프링 시큐리티의 인증을 담당, 사용자 인증시 앞에서 작성한 UserSecurityService 와 PasswordEncoder 를 사용
+    /** 스프링 시큐리티의 인증을 담당*/
     protected AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
