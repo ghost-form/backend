@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,9 +26,6 @@ public class Template {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
-
-//    /** 프롬프트 변수들 */
-//    private List<String> variables;
 
     @Builder
     public Template(Long id, String name, String content, Project project){
