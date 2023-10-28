@@ -52,4 +52,5 @@ public class TemplateService {
         templateRepository.deleteById(id);
         System.out.println("template id : " + template.getId() + "template was deleted.");
     }
+
 }

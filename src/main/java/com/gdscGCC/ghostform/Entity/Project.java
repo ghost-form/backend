@@ -32,7 +32,7 @@ public class Project {
     private List<Template> templates = new ArrayList<Template>();
 
     /** 프로젝트 변수들 */
-    private List<Variable> Variables;
+    //private List<Variable> Variables;
 
     /** 사용자 */
     private int user_id;
