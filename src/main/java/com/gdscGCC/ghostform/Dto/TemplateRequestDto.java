@@ -7,14 +7,14 @@ import lombok.Getter;
 
 @Getter
 public class TemplateRequestDto {
-    private Long id;
+    private Long template_id;
     private String name;
     private String content;
     private Project project;
 
     @Builder
-    public TemplateRequestDto(Long id, String name, String content, Project project){
-        this.id = id;
+    public TemplateRequestDto(Long template_id, String name, String content, Project project){
+        this.template_id = template_id;
         this.name = name;
         this.content = content;
         this.project = project;
@@ -23,7 +23,7 @@ public class TemplateRequestDto {
     // request Dto로 받은 Template 객체를 entity화 해서 저장하는 용도
     public Template toEntity(){
         return Template.builder()
-                .id(id)
+                .template_id(template_id)
                 .name(name)
                 .content(content)
                 .project(project)

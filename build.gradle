@@ -47,6 +47,9 @@ dependencies {
 	//	implementation 'mysql:mysql-connector-java'
 	//	implementation 'mysql:mysql-connector-java:8.0.34'
 
+	// hibernate Json Function
+	implementation 'io.hypersistence:hypersistence-utils-hibernate-62:3.6.0'
+
 }
 
 tasks.named('test') {

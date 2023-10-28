@@ -18,39 +18,46 @@ public class ProjectService {
     public Long save(ProjectRequestDto requestDto){
         // dto를 entity화 해서 repository의 save 메소드를 통해 db에 저장.
         // 저장 후 생성한 id를 반환해 줌.
-        return projectRepository.save(requestDto.toEntity()).getId();
+        return projectRepository.save(requestDto.toEntity()).getProject_id();
     }
 
     // DB에서 하나의 row 조회
     @Transactional
-    public ProjectResponseDto findById(Long id){
-        Project project = projectRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + id));
-        System.out.println("project id : " + project.getId());
+    public ProjectResponseDto findById(Long project_id){
+        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+        System.out.println("project id : " + project.getProject_id());
         System.out.println("project title : " + project.getTitle());
         System.out.println("project description : " + project.getDescription());
+        System.out.println("project templates : " + project.getTemplates());
+        System.out.println("project variables : " + project.getVariables());
+        System.out.println("project user_id : " + project.getUser_id());
         System.out.println("project lastModifiedDate : " + project.getLastModifiedDate());
         return new ProjectResponseDto(project);
     }
 
     // DB에서 하나의 row 수정
     @Transactional
-    public Long update(Long id, ProjectRequestDto requestDto){
-        Project project = projectRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + id));
+    public ProjectResponseDto update(Long project_id, ProjectRequestDto requestDto){
+        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+        project.updateProject(requestDto.getProject_id(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getTemplates(), requestDto.getVariables(), requestDto.getUser_id());
 
-        project.update(requestDto.getId(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getLastModifiedDate(), requestDto.getTemplates());
-        System.out.println("project id : " + project.getId());
+
+        System.out.println("project id : " + project.getProject_id());
         System.out.println("project title : " + project.getTitle());
-        System.out.println("project content : " + project.getDescription());
-        System.out.println("project content : " + project.getLastModifiedDate());
+        System.out.println("project description : " + project.getDescription());
+        System.out.println("project templates : " + project.getTemplates());
+        System.out.println("project variables : " + project.getVariables());
+        System.out.println("project user_id : " + project.getUser_id());
+        System.out.println("project lastModifiedDate : " + project.getLastModifiedDate());
 
-        return id;
+        return new ProjectResponseDto(project);
     }
 
     // DB에서 하나의 row 삭제
     @Transactional
-    public void delete(Long id){
-        Project project = projectRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + id));
-        projectRepository.deleteById(id);
-        System.out.println("project id : " + project.getId() + "project was deleted.");
+    public void delete(Long project_id){
+        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+        projectRepository.deleteById(project_id);
+        System.out.println("project id : " + project.getProject_id() + "project was deleted.");
     }
 }

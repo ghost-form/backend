@@ -18,14 +18,14 @@ public class TemplateService {
     public Long save(TemplateRequestDto requestDto){
         // dto를 entity화 해서 repository의 save 메소드를 통해 db에 저장.
         // 저장 후 생성한 id를 반환해 줌.
-        return templateRepository.save(requestDto.toEntity()).getId();
+        return templateRepository.save(requestDto.toEntity()).getTemplate_id();
     }
 
     // DB에서 하나의 row 조회
     @Transactional
     public TemplateResponseDto findById(Long id){
         Template template = templateRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
-        System.out.println("template id : " + template.getId());
+        System.out.println("template id : " + template.getTemplate_id());
         System.out.println("template name : " + template.getName());
         System.out.println("template content : " + template.getContent());
         return new TemplateResponseDto(template);
@@ -36,8 +36,8 @@ public class TemplateService {
     public Long update(Long id, TemplateRequestDto requestDto){
         Template template = templateRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
 
-        template.update(requestDto.getId(), requestDto.getName(), requestDto.getContent(), requestDto.getProject());
-        System.out.println("template id : " + template.getId());
+        template.update(requestDto.getTemplate_id(), requestDto.getName(), requestDto.getContent(), requestDto.getProject());
+        System.out.println("template id : " + template.getTemplate_id());
         System.out.println("template name : " + template.getName());
         System.out.println("template content : " + template.getContent());
         System.out.println("template project : " + template.getProject());
@@ -50,6 +50,6 @@ public class TemplateService {
     public void delete(Long id){
         Template template = templateRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
         templateRepository.deleteById(id);
-        System.out.println("template id : " + template.getId() + "template was deleted.");
+        System.out.println("template id : " + template.getTemplate_id() + "template was deleted.");
     }
 }
