@@ -1,4 +1,4 @@
-package com.gdscGCC.ghostform.Dto;
+package com.gdscGCC.ghostform.Dto.ChatGPT;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

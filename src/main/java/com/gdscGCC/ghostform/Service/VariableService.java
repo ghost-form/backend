@@ -1,15 +1,13 @@
 package com.gdscGCC.ghostform.Service;
 
-import com.gdscGCC.ghostform.Dto.VariableRequestDto;
+import com.gdscGCC.ghostform.Dto.Variable.VariableRequestDto;
 import com.gdscGCC.ghostform.Entity.Project;
 import com.gdscGCC.ghostform.Repository.ProjectRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -29,10 +27,10 @@ public class VariableService {
 
     /** 변수 하나 조회 */
     @Transactional
-    public Object getOneVariable(Long project_id, String variable_key){
+    public Object getOneVariable(Long project_id, String key){
         Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
         HashMap<String, Object> variable_list = project.getVariables();
-        Object value = variable_list.get(variable_key);
+        Object value = variable_list.get(key);
         if( value != null){
             return value;
         }

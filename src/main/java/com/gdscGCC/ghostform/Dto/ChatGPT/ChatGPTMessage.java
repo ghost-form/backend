@@ -1,4 +1,4 @@
-package com.gdscGCC.ghostform.Dto;
+package com.gdscGCC.ghostform.Dto.ChatGPT;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.gdscGCC.ghostform.Entity;
 
-import com.gdscGCC.ghostform.Dto.UserRequestDto;
+import com.gdscGCC.ghostform.Dto.User.UserRequestDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

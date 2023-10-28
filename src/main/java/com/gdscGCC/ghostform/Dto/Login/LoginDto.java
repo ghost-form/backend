@@ -1,4 +1,4 @@
-package com.gdscGCC.ghostform.Dto;
+package com.gdscGCC.ghostform.Dto.Login;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

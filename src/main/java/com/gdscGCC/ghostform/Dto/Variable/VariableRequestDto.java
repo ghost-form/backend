@@ -1,4 +1,4 @@
-package com.gdscGCC.ghostform.Dto;
+package com.gdscGCC.ghostform.Dto.Variable;
 
 import com.gdscGCC.ghostform.Entity.Project;
 import lombok.Getter;

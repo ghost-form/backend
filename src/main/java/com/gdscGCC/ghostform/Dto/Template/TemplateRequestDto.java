@@ -1,4 +1,4 @@
-package com.gdscGCC.ghostform.Dto;
+package com.gdscGCC.ghostform.Dto.Template;
 
 import com.gdscGCC.ghostform.Entity.Template;
 import com.gdscGCC.ghostform.Entity.Project;

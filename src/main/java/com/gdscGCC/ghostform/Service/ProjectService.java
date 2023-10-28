@@ -1,7 +1,7 @@
 package com.gdscGCC.ghostform.Service;
 
-import com.gdscGCC.ghostform.Dto.ProjectRequestDto;
-import com.gdscGCC.ghostform.Dto.ProjectResponseDto;
+import com.gdscGCC.ghostform.Dto.Project.ProjectRequestDto;
+import com.gdscGCC.ghostform.Dto.Project.ProjectResponseDto;
 import com.gdscGCC.ghostform.Entity.Project;
 import com.gdscGCC.ghostform.Repository.ProjectRepository;
 import jakarta.transaction.Transactional;
