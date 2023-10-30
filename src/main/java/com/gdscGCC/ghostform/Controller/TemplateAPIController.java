@@ -9,6 +9,7 @@ import com.gdscGCC.ghostform.Entity.Ask;
 import com.gdscGCC.ghostform.Entity.Template;
 import com.gdscGCC.ghostform.Service.ChatGPTService;
 import com.gdscGCC.ghostform.Service.TemplateService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,10 +19,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
+import java.util.Iterator;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/templates")
+@Tag(name = "Template", description = "Template API")
 public class TemplateAPIController {
     private final TemplateService templateService;
     private final ChatGPTService chatGPTService;

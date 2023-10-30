@@ -3,6 +3,7 @@ package com.gdscGCC.ghostform.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gdscGCC.ghostform.Dto.ChatGPTResponseDto;
 import com.gdscGCC.ghostform.Service.ChatGPTService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/chatgpt")
+@Tag(name = "ChatGPT", description = "ChatGPT API")
 public class ChatGPTAPIController {
 
     private final ChatGPTService chatgptService;

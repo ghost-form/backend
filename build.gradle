@@ -47,6 +47,15 @@ dependencies {
 	//	implementation 'mysql:mysql-connector-java'
 	//	implementation 'mysql:mysql-connector-java:8.0.34'
 
+	// CSV
+	implementation group: 'com.opencsv', name: 'opencsv', version: '5.7.1'
+	implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.15.3'
+
+
+	// Swagger
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
+
+
 }
 
 tasks.named('test') {
