@@ -44,8 +44,8 @@ dependencies {
 	// Database
 	implementation 'mysql:mysql-connector-java:8.0.32'
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	//	implementation 'mysql:mysql-connector-java'
-	//	implementation 'mysql:mysql-connector-java:8.0.34'
+	// implementation 'mysql:mysql-connector-java'
+	// implementation 'mysql:mysql-connector-java:8.0.33'
 
 	// CSV
 	implementation group: 'com.opencsv', name: 'opencsv', version: '5.7.1'
