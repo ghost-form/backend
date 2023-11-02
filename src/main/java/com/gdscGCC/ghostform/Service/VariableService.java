@@ -1,8 +1,10 @@
 package com.gdscGCC.ghostform.Service;
 
 import com.gdscGCC.ghostform.Dto.Variable.VariableRequestDto;
-import com.gdscGCC.ghostform.Entity.Project;
+import com.gdscGCC.ghostform.Entity.Template;
+import com.gdscGCC.ghostform.Entity.Template;
 import com.gdscGCC.ghostform.Repository.ProjectRepository;
+import com.gdscGCC.ghostform.Repository.TemplateRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,23 +15,24 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class VariableService {
-    private final ProjectRepository projectRepository;
+    private final TemplateRepository templateRepository;
 
     /** 모든 변수 조회 */
     @Transactional
-    public HashMap<String, Object> getAllVariables(Long project_id){
-        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
-        System.out.println(project.getVariables());
-        HashMap<String, Object> variable_list = project.getVariables();
+    public HashMap<String, Object> getAllVariables(Long template_id){
+        
+        Template template = templateRepository.findById(template_id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + template_id));
+        System.out.println(template.getVariables());
+        HashMap<String, Object> variable_list = template.getVariables();
         return variable_list;
 
     }
 
     /** 변수 하나 조회 */
     @Transactional
-    public Object getOneVariable(Long project_id, String key){
-        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
-        HashMap<String, Object> variable_list = project.getVariables();
+    public Object getOneVariable(Long template_id, String key){
+        Template template = templateRepository.findById(template_id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + template_id));
+        HashMap<String, Object> variable_list = template.getVariables();
         Object value = variable_list.get(key);
         if( value != null){
             return value;
@@ -42,9 +45,9 @@ public class VariableService {
 
     /** 변수 하나 생성 */
     @Transactional
-    public HashMap<String, Object> create(Long project_id, HashMap<String, Object> map){
-        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
-        HashMap<String, Object> variables = project.getVariables();
+    public HashMap<String, Object> create(Long template_id, HashMap<String, Object> map){
+        Template template = templateRepository.findById(template_id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + template_id));
+        HashMap<String, Object> variables = template.getVariables();
 
         Set<String> keys = map.keySet();
         for (String key : keys){
@@ -53,16 +56,17 @@ public class VariableService {
 
 
         // 추가 후 업데이트
-        project.updateProject(project.getProject_id(), project.getTitle(), project.getDescription(), project.getTemplates(), variables, project.getUser_id());
+        template.updateTemplate(template.getTemplate_id(), template.getName(), template.getContent(), template.getProject(), template.getVariables());
 
         return map;
     }
 
     /** 변수 하나 삭제 */
     @Transactional
-    public void deleteOne(Long project_id, String deleteKey){
-        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
-        HashMap<String, Object> variables = project.getVariables();
+    public void deleteOne(Long template_id, String deleteKey){
+        Template template = templateRepository.findById(template_id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + template_id));
+
+        HashMap<String, Object> variables = template.getVariables();
 
 
         if(variables.containsKey(deleteKey)){
@@ -73,19 +77,20 @@ public class VariableService {
         }
 
         // 삭제 후 업데이트
-        project.updateProject(project.getProject_id(), project.getTitle(), project.getDescription(), project.getTemplates(), variables, project.getUser_id());
+        template.updateTemplate(template.getTemplate_id(), template.getName(), template.getContent(), template.getProject(), template.getVariables());
 
     }
 
     /** 변수 하나 수정 */
     @Transactional
-    public void updateOneVariable(Long project_id, VariableRequestDto variableRequestDto){
-        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+    public void updateOneVariable(Long template_id, VariableRequestDto variableRequestDto){
+        Template template = templateRepository.findById(template_id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + template_id));
+
         String key = variableRequestDto.getKey();
         Object value = variableRequestDto.getValue();
 
         // 기존 project의 변수들
-        HashMap<String, Object> variables = project.getVariables();
+        HashMap<String, Object> variables = template.getVariables();
 
 
         if(variables.containsKey(key)){
@@ -96,7 +101,7 @@ public class VariableService {
         }
 
         // 수정 후 업데이트
-        project.updateProject(project.getProject_id(), project.getTitle(), project.getDescription(), project.getTemplates(), variables, project.getUser_id());
+        template.updateTemplate(template.getTemplate_id(), template.getName(), template.getContent(), template.getProject(), template.getVariables());
 
 
     }

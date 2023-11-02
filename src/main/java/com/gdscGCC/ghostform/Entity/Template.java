@@ -1,7 +1,11 @@
 package com.gdscGCC.ghostform.Entity;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
+
+import java.util.HashMap;
 
 @Getter
 @Entity
@@ -19,34 +23,42 @@ public class Template {
     /** 템플릿 전체 내용 */
     private String content;
 
+    /** 템플릿 변수들
+     * key로 Long id, String name, String type이 존재 */
+    @Type(JsonType.class)
+    @Column(name = "variables", columnDefinition = "text")
+    private HashMap<String, Object> variables = new HashMap<>();
+
     /** 프로젝트 번호 */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "project_id")
     @Setter(value = AccessLevel.NONE)
     private Project project;
 
     public void setProject(Project project) {
         if (this.project != null) {
-            this.project.getTemplates().add(this);
+            this.project.setTemplate(null); // 현재 연결된 project의 template을 제거
         }
         this.project = project;
-
-        // this : 나 자신의 인스턴스를 넣어준다.
-        project.getTemplates().add(this);
+        if (project != null) {
+            project.setTemplate(this); // 새로운 project와 연결
+        }
     }
 
     @Builder
-    public Template(Long template_id, String name, String content, Project project){
+    public Template(Long template_id, String name, String content, Project project, HashMap<String, Object> variables){
         this.template_id = template_id;
         this.name = name;
         this.content = content;
-        this.project = project;
+        setProject(project);
+        this.variables = variables;
     }
 
-    public void update(Long template_id, String name, String content, Project project){
+    public void updateTemplate(Long template_id, String name, String content, Project project, HashMap<String, Object> variables){
         this.template_id = template_id;
         this.name = name;
         this.content = content;
-        this.project = project;
+        setProject(project);
+        this.variables = variables;
     }
 }

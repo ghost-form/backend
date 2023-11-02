@@ -19,8 +19,7 @@ public class ProjectRequestDto {
     private Long project_id;
     private String title;
     private String description;
-    private List<Template> templates;
-    private HashMap<String, Object> variables;
+    private Template template;
     private Long user_id;
     private LocalDateTime lastModifiedDate;
 
@@ -30,12 +29,11 @@ public class ProjectRequestDto {
         return this.lastModifiedDate = LocalDateTime.now();
     }
     @Builder
-    public ProjectRequestDto(Long project_id, String title, String description, List<Template> templates, HashMap<String, Object> variables, Long user_id) {
+    public ProjectRequestDto(Long project_id, String title, String description, Template template, Long user_id) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
-        this.templates = templates;
-        this.variables = variables;
+        this.template = template;
         this.user_id = user_id;
         this.lastModifiedDate = setLastModifiedDate();
     }
@@ -45,8 +43,7 @@ public class ProjectRequestDto {
                 .project_id(this.project_id)
                 .title(this.title)
                 .description(this.description)
-                .templates(this.templates)
-                .variables(this.variables)
+                .template(this.template)
                 .user_id(this.user_id)
                 .build();
     }

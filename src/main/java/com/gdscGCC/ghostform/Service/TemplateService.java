@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class TemplateService {
@@ -28,7 +30,15 @@ public class TemplateService {
         System.out.println("template id : " + template.getTemplate_id());
         System.out.println("template name : " + template.getName());
         System.out.println("template content : " + template.getContent());
+        System.out.println("template project : " + template.getProject());
         return new TemplateResponseDto(template);
+    }
+
+    // DB에서 모든 row 조회
+    @Transactional
+    public List<Template> findAll(){
+        List<Template> templateList = templateRepository.findAll();
+        return templateList;
     }
 
     // DB에서 하나의 row 수정
@@ -36,7 +46,7 @@ public class TemplateService {
     public Long update(Long id, TemplateRequestDto requestDto){
         Template template = templateRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 템플릿이 없습니다. id=" + id));
 
-        template.update(requestDto.getTemplate_id(), requestDto.getName(), requestDto.getContent(), requestDto.getProject());
+        template.updateTemplate(requestDto.getTemplate_id(), requestDto.getName(), requestDto.getContent(), requestDto.getProject(), requestDto.getVariables());
         System.out.println("template id : " + template.getTemplate_id());
         System.out.println("template name : " + template.getName());
         System.out.println("template content : " + template.getContent());

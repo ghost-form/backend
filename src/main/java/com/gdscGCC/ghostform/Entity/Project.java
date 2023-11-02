@@ -1,19 +1,12 @@
 package com.gdscGCC.ghostform.Entity;
 
 import java.time.LocalDateTime;
-import java.util.*;
-
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.springframework.cglib.core.Local;
+import lombok.*;
 
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 /** 프로젝트 개체 */
@@ -30,14 +23,10 @@ public class Project {
     private String description;
 
     /** 하위 템플릿 */
-    @OneToMany(mappedBy = "project")
-    private List<Template> templates = new ArrayList<Template>();
+    @OneToOne
+    @JoinColumn(name = "template_id")
+    private Template template;
 
-    /** 프로젝트 변수들
-     * key로 Long id, String name, String type이 존재 */
-    @Type(JsonType.class)
-    @Column(name = "variables", columnDefinition = "text")
-    private HashMap<String, Object> variables = new HashMap<>();
 
     /** 사용자 id */
     private Long user_id;
@@ -49,12 +38,11 @@ public class Project {
         return this.lastModifiedDate = LocalDateTime.now();
     }
 
-    public void updateProject(Long project_id, String title, String description, List<Template> templates, HashMap<String, Object> variables, Long user_id) {
+    public void updateProject(Long project_id, String title, String description, Template template, Long user_id) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
-        this.templates = templates;
-        this.variables = variables;
+        this.template = template;
         this.user_id = user_id;
         this.lastModifiedDate = setLastModifiedDate();
     }
@@ -62,12 +50,11 @@ public class Project {
 
 
     @Builder
-    public Project(Long project_id, String title, String description, List<Template> templates, HashMap<String, Object> variables, Long user_id) {
+    public Project(Long project_id, String title, String description, Template template, Long user_id) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
-        this.templates = templates;
-        this.variables = variables;
+        this.template = template;
         this.user_id = user_id;
         this.lastModifiedDate = setLastModifiedDate();
     }

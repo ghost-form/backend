@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class ProjectService {
@@ -21,6 +23,15 @@ public class ProjectService {
         return projectRepository.save(requestDto.toEntity()).getProject_id();
     }
 
+    // DB에서 모든 row 조회
+    @Transactional
+    public List<Project> findAll(){
+        List<Project> projectList = projectRepository.findAll();
+        if (projectList.isEmpty()) {
+            throw new IllegalArgumentException("해당 프로젝트 리스트가 없습니다.");
+        }
+        return projectList;
+    }
     // DB에서 하나의 row 조회
     @Transactional
     public ProjectResponseDto findById(Long project_id){
@@ -28,8 +39,7 @@ public class ProjectService {
         System.out.println("project id : " + project.getProject_id());
         System.out.println("project title : " + project.getTitle());
         System.out.println("project description : " + project.getDescription());
-        System.out.println("project templates : " + project.getTemplates());
-        System.out.println("project variables : " + project.getVariables());
+        System.out.println("project templates : " + project.getTemplate());
         System.out.println("project user_id : " + project.getUser_id());
         System.out.println("project lastModifiedDate : " + project.getLastModifiedDate());
         return new ProjectResponseDto(project);
@@ -39,14 +49,13 @@ public class ProjectService {
     @Transactional
     public ProjectResponseDto update(Long project_id, ProjectRequestDto requestDto){
         Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
-        project.updateProject(requestDto.getProject_id(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getTemplates(), requestDto.getVariables(), requestDto.getUser_id());
+        project.updateProject(requestDto.getProject_id(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getTemplate(), requestDto.getUser_id());
 
 
         System.out.println("project id : " + project.getProject_id());
         System.out.println("project title : " + project.getTitle());
         System.out.println("project description : " + project.getDescription());
-        System.out.println("project templates : " + project.getTemplates());
-        System.out.println("project variables : " + project.getVariables());
+        System.out.println("project templates : " + project.getTemplate());
         System.out.println("project user_id : " + project.getUser_id());
         System.out.println("project lastModifiedDate : " + project.getLastModifiedDate());
 
