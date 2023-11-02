@@ -2,7 +2,9 @@ package com.gdscGCC.ghostform.Service;
 
 import com.gdscGCC.ghostform.Dto.Template.TemplateRequestDto;
 import com.gdscGCC.ghostform.Dto.Template.TemplateResponseDto;
+import com.gdscGCC.ghostform.Entity.Project;
 import com.gdscGCC.ghostform.Entity.Template;
+import com.gdscGCC.ghostform.Repository.ProjectRepository;
 import com.gdscGCC.ghostform.Repository.TemplateRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +16,18 @@ import java.util.List;
 @Service
 public class TemplateService {
     private final TemplateRepository templateRepository;
+    private final ProjectRepository projectRepository;
 
     // DB에 save
     @Transactional
-    public Long save(TemplateRequestDto requestDto){
+    public Long save(Long project_id, TemplateRequestDto requestDto){
         // dto를 entity화 해서 repository의 save 메소드를 통해 db에 저장.
         // 저장 후 생성한 id를 반환해 줌.
-        return templateRepository.save(requestDto.toEntity()).getTemplate_id();
+        Template template = requestDto.toEntity();
+        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+        template.setProject(project);
+
+        return templateRepository.save(template).getTemplate_id();
     }
 
     // DB에서 하나의 row 조회

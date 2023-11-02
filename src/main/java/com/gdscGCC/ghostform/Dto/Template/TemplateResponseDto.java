@@ -15,8 +15,6 @@ public class TemplateResponseDto {
     /** 템플릿 전체 내용 */
     private String content;
 
-    private Project project;
-
     private HashMap<String, Object> variables;
 
     // repository를 통해 조회한 entity를 Dto로 변환하는 용도
@@ -24,7 +22,6 @@ public class TemplateResponseDto {
         this.template_id = template.getTemplate_id();
         this.name = template.getName();
         this.content = template.getContent();
-        this.project = template.getProject();
         this.variables = template.getVariables();
     }
 }

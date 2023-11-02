@@ -1,6 +1,7 @@
 package com.gdscGCC.ghostform.Controller;
 
 import com.gdscGCC.ghostform.Dto.Template.TemplateRequestDto;
+import com.gdscGCC.ghostform.Dto.Template.TemplateResponseDto;
 import com.gdscGCC.ghostform.Dto.Variable.VariableRequestDto;
 import com.gdscGCC.ghostform.Entity.Template;
 import com.gdscGCC.ghostform.Service.TemplateService;
@@ -23,20 +24,21 @@ public class TemplateAPIController {
 
     /** 한 개의 템플릿 조회 */
     @GetMapping("/{id}")
-    public void templateGet(@PathVariable Long id){
-        templateService.findById(id);
+    public ResponseEntity<TemplateResponseDto> templateGet(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(templateService.findById(id));
     }
 
-    /** 모든 템플릿 조회 */
-    @GetMapping("")
-    public List<Template> projectListGet(){
-        return templateService.findAll();
-    }
+//    /** 모든 템플릿 조회 */
+//    @GetMapping("/all")
+//    public List<Template> projectListGet(){
+//        return templateService.findAll();
+//    }
 
-    /** 한 개의 템플릿 생성 */
+    /** 한 개의 템플릿 생성
+     *  프로젝트 id를 requestParameter로 전달해 줘야 함 */
     @PostMapping("")
-    public Long templateSave(@RequestBody TemplateRequestDto requestDto){
-        return templateService.save(requestDto);
+    public Long templateSave(@RequestParam Long project_id, @RequestBody TemplateRequestDto requestDto){
+        return templateService.save(project_id, requestDto);
     }
 
 

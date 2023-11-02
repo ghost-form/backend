@@ -29,28 +29,16 @@ public class Template {
     @Column(name = "variables", columnDefinition = "text")
     private HashMap<String, Object> variables = new HashMap<>();
 
-    /** 프로젝트 번호 */
-    @OneToOne
-    @JoinColumn(name = "project_id")
-    @Setter(value = AccessLevel.NONE)
+    /** 프로젝트 */
+    @OneToOne(mappedBy = "template")
     private Project project;
-
-    public void setProject(Project project) {
-        if (this.project != null) {
-            this.project.setTemplate(null); // 현재 연결된 project의 template을 제거
-        }
-        this.project = project;
-        if (project != null) {
-            project.setTemplate(this); // 새로운 project와 연결
-        }
-    }
 
     @Builder
     public Template(Long template_id, String name, String content, Project project, HashMap<String, Object> variables){
         this.template_id = template_id;
         this.name = name;
         this.content = content;
-        setProject(project);
+        this.project = project;
         this.variables = variables;
     }
 
@@ -58,7 +46,12 @@ public class Template {
         this.template_id = template_id;
         this.name = name;
         this.content = content;
-        setProject(project);
+        this.project = project;
         this.variables = variables;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+        this.project.setTemplate(this);
     }
 }
