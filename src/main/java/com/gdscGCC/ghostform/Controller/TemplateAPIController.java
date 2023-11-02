@@ -2,11 +2,10 @@ package com.gdscGCC.ghostform.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gdscGCC.ghostform.Dto.AskRequestDto;
-import com.gdscGCC.ghostform.Dto.ChatGPTResponseDto;
-import com.gdscGCC.ghostform.Dto.TemplateRequestDto;
-import com.gdscGCC.ghostform.Dto.TemplateResponseDto;
+import com.gdscGCC.ghostform.Dto.ChatGPT.ChatGPTResponseDto;
+import com.gdscGCC.ghostform.Dto.Template.TemplateRequestDto;
+import com.gdscGCC.ghostform.Dto.Template.TemplateResponseDto;
 import com.gdscGCC.ghostform.Entity.Ask;
-import com.gdscGCC.ghostform.Entity.Template;
 import com.gdscGCC.ghostform.Service.ChatGPTService;
 import com.gdscGCC.ghostform.Service.TemplateService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,12 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
-import java.util.Iterator;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -38,7 +34,7 @@ public class TemplateAPIController {
 
     @PostMapping("/save")
     public Long templateSave(@RequestBody TemplateRequestDto requestDto){
-        return templateService.save(requestDto);
+        return templateService.save(requestDto.getProject().getProject_id(), requestDto);
     }
 
     @DeleteMapping("/delete/{id}")

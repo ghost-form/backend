@@ -1,13 +1,10 @@
 package com.gdscGCC.ghostform.Controller;
 
-import com.gdscGCC.ghostform.Dto.LoginDto;
-import com.gdscGCC.ghostform.Dto.UserRequestDto;
-import com.gdscGCC.ghostform.Dto.UserResponseDto;
-import com.gdscGCC.ghostform.Entity.User;
+import com.gdscGCC.ghostform.Dto.Login.LoginDto;
+import com.gdscGCC.ghostform.Dto.User.UserRequestDto;
+import com.gdscGCC.ghostform.Dto.User.UserResponseDto;
 import com.gdscGCC.ghostform.Service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
