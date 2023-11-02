@@ -1,95 +1,85 @@
 package com.gdscGCC.ghostform.Controller;
 
-import com.gdscGCC.ghostform.Dto.Template.TemplateRequestDto;
-import com.gdscGCC.ghostform.Dto.Template.TemplateResponseDto;
-import com.gdscGCC.ghostform.Dto.Variable.VariableRequestDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gdscGCC.ghostform.Dto.AskRequestDto;
+import com.gdscGCC.ghostform.Dto.ChatGPTResponseDto;
+import com.gdscGCC.ghostform.Dto.TemplateRequestDto;
+import com.gdscGCC.ghostform.Dto.TemplateResponseDto;
+import com.gdscGCC.ghostform.Entity.Ask;
 import com.gdscGCC.ghostform.Entity.Template;
+import com.gdscGCC.ghostform.Service.ChatGPTService;
 import com.gdscGCC.ghostform.Service.TemplateService;
-import com.gdscGCC.ghostform.Service.VariableService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/templates")
+@Tag(name = "Template", description = "Template API")
 public class TemplateAPIController {
     private final TemplateService templateService;
-    private final VariableService variableService;
+    private final ChatGPTService chatGPTService;
 
-    /** 한 개의 템플릿 조회 */
     @GetMapping("/{id}")
-    public ResponseEntity<TemplateResponseDto> templateGet(@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(templateService.findById(id));
+    public void templateGet(@PathVariable Long id){
+        templateService.findById(id);
     }
 
-//    /** 모든 템플릿 조회 */
-//    @GetMapping("/all")
-//    public List<Template> projectListGet(){
-//        return templateService.findAll();
-//    }
-
-    /** 한 개의 템플릿 생성
-     *  프로젝트 id를 requestParameter로 전달해 줘야 함 */
-    @PostMapping("")
-    public Long templateSave(@RequestParam Long project_id, @RequestBody TemplateRequestDto requestDto){
-        return templateService.save(project_id, requestDto);
+    @PostMapping("/save")
+    public Long templateSave(@RequestBody TemplateRequestDto requestDto){
+        return templateService.save(requestDto);
     }
 
-
-    /** 한 개의 템플릿 삭제 */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void templateDelete(@PathVariable Long id){
         templateService.delete(id);
     }
 
-    /** 한 개의 템플릿 수정 */
     @PutMapping("/{id}")
     public Long templateUpdate(@PathVariable Long id, @RequestBody TemplateRequestDto requestDto){
         System.out.println("id는!!! : " + id);
         return templateService.update(id, requestDto);
     }
 
-    /** Template의 모든 변수 조회
-     * RequestParameter로 template_id를 받아옴*/
-    @GetMapping("/{template_id}/variables")
-    public ResponseEntity<HashMap<String, Object>> getAllVariables(@PathVariable Long template_id){
-        return ResponseEntity.status(HttpStatus.OK).body(variableService.getAllVariables(template_id));
+    @PostMapping(value = "/{id}/ask", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> makeQuestionStream (@PathVariable Long id, @RequestBody AskRequestDto askRequestDto) {
+        TemplateResponseDto template = templateService.findById(id);
+        String question = template.getContent();
+        for (Ask a : askRequestDto.getAskList()) {
+            question = question.replace("{{" + a.getKey() + "}}", a.getValue());
+        }
+        try {
+            return chatGPTService.getChatGptStreamResponse(question);
+        } catch (JsonProcessingException e) {
+            log.warn(e.toString());
+            return Flux.empty();
+        }
     }
 
-    /** Template의 특정 변수 하나 조회
-     * RequestParameter로 template_id 및 variable_key를 받아옴*/
-    @GetMapping("/{template_id}/variable")
-    public ResponseEntity<Object> getOneVariables(@PathVariable Long template_id, @RequestParam String key){
-        return ResponseEntity.status(HttpStatus.OK).body(variableService.getOneVariable(template_id, key));
-    }
-
-    /** Template에 한 개의 변수 생성
-     * RequestParameter로 template_id를 받아옴
-     * RequestBody로 생성할 JSON을 받아옴 */
-    @PostMapping("/{template_id}/variables")
-    public HashMap<String, Object> createOneVariable(@PathVariable Long template_id, @RequestBody HashMap<String, Object> map){
-        return variableService.create(template_id, map);
-    }
-
-    /** Template에 한 개의 변수 삭제
-     * RequestParameter로 template_id를 받아옴
-     * RequestParameter로 삭제할 변수 key를 받아옴 */
-    @DeleteMapping("/{template_id}/variables")
-    public void deleteOneVariable(@PathVariable Long template_id, @RequestParam String deleteKey){
-        variableService.deleteOne(template_id, deleteKey);
-    }
-
-    /** 한 개의 변수 수정
-     * RequestParameter로 project_id를 받아옴
-     * RequestBody로 수정할 변수 key와 value를 받아옴*/
-    @PutMapping("/{template_id}/variables")
-    public void updateOneVariable(@PathVariable Long template_id, @RequestBody VariableRequestDto variableRequestDto){
-        variableService.updateOneVariable(template_id, variableRequestDto);
+    @PostMapping(value = "/{id}/ask/json")
+    public ResponseEntity<ChatGPTResponseDto> makeQuestion (@PathVariable Long id, @RequestBody AskRequestDto askRequestDto) {
+        TemplateResponseDto template = templateService.findById(id);
+        String question = template.getContent();
+        for (Ask a : askRequestDto.getAskList()) {
+            question = question.replace("{{" + a.getKey() + "}}", a.getValue());
+        }
+        ChatGPTResponseDto chatGPTResponseDto = null;
+        try {
+            chatGPTResponseDto = chatGPTService.askQuestion(question);
+        } catch (Exception e) {
+            log.warn(e.toString());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(chatGPTResponseDto);
     }
 }

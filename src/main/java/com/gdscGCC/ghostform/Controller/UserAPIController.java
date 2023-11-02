@@ -1,19 +1,27 @@
 package com.gdscGCC.ghostform.Controller;
 
-import com.gdscGCC.ghostform.Dto.Login.LoginDto;
-import com.gdscGCC.ghostform.Dto.User.UserRequestDto;
-import com.gdscGCC.ghostform.Dto.User.UserResponseDto;
+import com.gdscGCC.ghostform.Dto.LoginDto;
+import com.gdscGCC.ghostform.Dto.UserRequestDto;
+import com.gdscGCC.ghostform.Dto.UserResponseDto;
+import com.gdscGCC.ghostform.Entity.User;
 import com.gdscGCC.ghostform.Service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
+@Tag(name = "User", description = "User API")
 public class UserAPIController {
     private final UserService userService;
 
@@ -39,7 +47,7 @@ public class UserAPIController {
     }
 
     /** 유저 삭제 API */
-    @DeleteMapping("/remove")
+    @PostMapping("/remove")
     public ResponseEntity<UserRequestDto> userRemove(@RequestBody UserRequestDto userRequestDto) {
         userService.update(userRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(userRequestDto);

@@ -44,8 +44,17 @@ dependencies {
 	// Database
 	implementation 'mysql:mysql-connector-java:8.0.32'
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	//	implementation 'mysql:mysql-connector-java'
-	//	implementation 'mysql:mysql-connector-java:8.0.34'
+	// implementation 'mysql:mysql-connector-java'
+	// implementation 'mysql:mysql-connector-java:8.0.33'
+
+	// CSV
+	implementation group: 'com.opencsv', name: 'opencsv', version: '5.7.1'
+	implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.15.3'
+
+
+	// Swagger
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
+
 
 	// hibernate Json Function
 	implementation 'io.hypersistence:hypersistence-utils-hibernate-62:3.6.0'
