@@ -1,4 +1,4 @@
-package com.gdscGCC.ghostform.Dto;
+package com.gdscGCC.ghostform.Dto.Ask;
 
 
 import com.gdscGCC.ghostform.Entity.Ask;
