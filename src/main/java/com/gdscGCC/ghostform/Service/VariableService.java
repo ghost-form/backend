@@ -1,9 +1,6 @@
 package com.gdscGCC.ghostform.Service;
 
 import com.gdscGCC.ghostform.Dto.Variable.VariableRequestDto;
-import com.gdscGCC.ghostform.Entity.Template;
-import com.gdscGCC.ghostform.Entity.Template;
-import com.gdscGCC.ghostform.Repository.ProjectRepository;
 import com.gdscGCC.ghostform.Repository.TemplateRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

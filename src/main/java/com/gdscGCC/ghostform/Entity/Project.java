@@ -1,8 +1,12 @@
 package com.gdscGCC.ghostform.Entity;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 
 @Getter
@@ -22,40 +26,58 @@ public class Project {
     /** 프로젝트 설명 */
     private String description;
 
-    /** 하위 템플릿 */
-    @OneToOne
-    @JoinColumn(name = "template_id")
-    private Template template;
+    /** 템플릿 전체 내용 */
+    private String content;
 
+    /** 템플릿 변수들
+     * key로 Long id, String name, String type이 존재 */
+    @Type(JsonType.class)
+    @Column(name = "variables", columnDefinition = "text")
+    private HashMap<String, Object> variables = new HashMap<>();
 
     /** 사용자 id */
     private Long user_id;
+
     /** 최종 수정일 */
     private LocalDateTime lastModifiedDate;
+
+    /** 프로젝트 STAR */
+    private Long star;
+
+//    /** 실행 테이블 */
+//    @OneToMany
+//    @JoinColumn(name = "run_id")
+//    private Run run_id;
 
 
     public LocalDateTime setLastModifiedDate() {
         return this.lastModifiedDate = LocalDateTime.now();
     }
 
-    public void updateProject(Long project_id, String title, String description, Template template, Long user_id) {
+    public void updateProject(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id, Long star) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
-        this.template = template;
-        this.user_id = user_id;
         this.lastModifiedDate = setLastModifiedDate();
+        this.content = content;
+        this.variables = variables;
+        this.user_id = user_id;
+        this.star = star;
+//        this.run_id = run_id;
     }
 
 
 
     @Builder
-    public Project(Long project_id, String title, String description, Template template, Long user_id) {
+    public Project(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id, Long star) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
-        this.template = template;
-        this.user_id = user_id;
         this.lastModifiedDate = setLastModifiedDate();
+        this.content = content;
+        this.variables = variables;
+        this.user_id = user_id;
+        this.star = star;
+//        this.run_id = run_id;
     }
 }

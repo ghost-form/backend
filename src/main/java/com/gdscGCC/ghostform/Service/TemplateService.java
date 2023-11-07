@@ -3,7 +3,6 @@ package com.gdscGCC.ghostform.Service;
 import com.gdscGCC.ghostform.Dto.Template.TemplateRequestDto;
 import com.gdscGCC.ghostform.Dto.Template.TemplateResponseDto;
 import com.gdscGCC.ghostform.Entity.Project;
-import com.gdscGCC.ghostform.Entity.Template;
 import com.gdscGCC.ghostform.Repository.ProjectRepository;
 import com.gdscGCC.ghostform.Repository.TemplateRepository;
 import jakarta.transaction.Transactional;

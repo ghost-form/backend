@@ -1,16 +1,18 @@
 package com.gdscGCC.ghostform.Dto.Project;
 
 import com.gdscGCC.ghostform.Entity.Project;
-import com.gdscGCC.ghostform.Entity.Template;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Setter
 @NoArgsConstructor
@@ -19,9 +21,12 @@ public class ProjectRequestDto {
     private Long project_id;
     private String title;
     private String description;
-    private Template template;
+    private String content;
+    private HashMap<String, Object> variables = new HashMap<>();
     private Long user_id;
     private LocalDateTime lastModifiedDate;
+    private Long star;
+//    private Run run_id;
 
 
 
@@ -29,13 +34,16 @@ public class ProjectRequestDto {
         return this.lastModifiedDate = LocalDateTime.now();
     }
     @Builder
-    public ProjectRequestDto(Long project_id, String title, String description, Template template, Long user_id) {
+    public ProjectRequestDto(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id, Long star) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
-        this.template = template;
-        this.user_id = user_id;
         this.lastModifiedDate = setLastModifiedDate();
+        this.content = content;
+        this.variables = variables;
+        this.user_id = user_id;
+        this.star = star;
+//        this.run = run;
     }
 
     public Project toEntity(){
@@ -43,8 +51,11 @@ public class ProjectRequestDto {
                 .project_id(this.project_id)
                 .title(this.title)
                 .description(this.description)
-                .template(this.template)
-                .user_id(this.user_id)
+                .lastModifiedDate(this.lastModifiedDate)
+                .content(this.content)
+                .variables(this.variables)
+                .user_id(user_id)
+//                .run_id(this.run_id)
                 .build();
     }
 }
