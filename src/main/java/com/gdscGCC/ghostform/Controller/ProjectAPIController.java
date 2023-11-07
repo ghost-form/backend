@@ -66,6 +66,7 @@ public class ProjectAPIController {
         return ResponseEntity.status(HttpStatus.OK).body(projectService.update(project_id, requestDto));
     }
 
+    /** ChatGPT로부터 Stream 형태의 답변 받아오기 */
     @PostMapping(value = "/{project_id}/ask", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> makeQuestionStream (@PathVariable Long project_id, @RequestBody AskRequestDto askRequestDto) {
         ProjectResponseDto project = projectService.findById(project_id);
@@ -81,6 +82,7 @@ public class ProjectAPIController {
         }
     }
 
+    /** ChatGPT로부터 JSON 형태의 답변 받아오기 */
     @PostMapping(value = "/{project_id}/ask/json")
     public ResponseEntity<ChatGPTResponseDto> makeQuestion (@PathVariable Long project_id, @RequestBody AskRequestDto askRequestDto) {
         ProjectResponseDto project = projectService.findById(project_id);
@@ -95,5 +97,43 @@ public class ProjectAPIController {
             log.warn(e.toString());
         }
         return ResponseEntity.status(HttpStatus.OK).body(chatGPTResponseDto);
+    }
+
+    /** Project의 모든 변수 조회
+     * RequestParameter로 project_id를 받아옴*/
+    @GetMapping("/{project_id}/variables")
+    public ResponseEntity<HashMap<String, Object>> getAllVariables(@PathVariable Long project_id){
+        return ResponseEntity.status(HttpStatus.OK).body(variableService.getAllVariables(project_id));
+    }
+
+    /** Project의 특정 변수 하나 조회
+     * RequestParameter로 project_id 및 variable_key를 받아옴*/
+    @GetMapping("/{project_id}/variable")
+    public ResponseEntity<Object> getOneVariables(@PathVariable Long project_id, @RequestParam String key){
+        return ResponseEntity.status(HttpStatus.OK).body(variableService.getOneVariable(project_id, key));
+    }
+
+    /** Project에 한 개의 변수 생성
+     * RequestParameter로 project_id를 받아옴
+     * RequestBody로 생성할 JSON을 받아옴 */
+    @PostMapping("/{project_id}/variables")
+    public HashMap<String, Object> createOneVariable(@PathVariable Long project_id, @RequestBody HashMap<String, Object> map){
+        return variableService.create(project_id, map);
+    }
+
+    /** Project에 한 개의 변수 삭제
+     * RequestParameter로 project_id를 받아옴
+     * RequestParameter로 삭제할 변수 key를 받아옴 */
+    @DeleteMapping("/{project_id}/variables")
+    public void deleteOneVariable(@PathVariable Long project_id, @RequestParam String deleteKey){
+        variableService.deleteOne(project_id, deleteKey);
+    }
+
+    /** 한 개의 변수 수정
+     * RequestParameter로 project_id를 받아옴
+     * RequestBody로 수정할 변수 key와 value를 받아옴*/
+    @PutMapping("/{project_id}/variables")
+    public void updateOneVariable(@PathVariable Long project_id, @RequestBody VariableRequestDto variableRequestDto){
+        variableService.updateOneVariable(project_id, variableRequestDto);
     }
 }

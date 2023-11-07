@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -39,7 +41,6 @@ public class ProjectService {
         System.out.println("project id : " + project.getProject_id());
         System.out.println("project title : " + project.getTitle());
         System.out.println("project description : " + project.getDescription());
-        System.out.println("project templates : " + project.getTemplate());
         System.out.println("project user_id : " + project.getUser_id());
         System.out.println("project lastModifiedDate : " + project.getLastModifiedDate());
         return new ProjectResponseDto(project);
@@ -49,13 +50,10 @@ public class ProjectService {
     @Transactional
     public ProjectResponseDto update(Long project_id, ProjectRequestDto requestDto){
         Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
-        project.updateProject(requestDto.getProject_id(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getTemplate(), requestDto.getUser_id());
-
-
+        project.updateProject(requestDto.getProject_id(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getContent(), requestDto.getVariables(), requestDto.getUser_id(), requestDto.getLastModifiedDate(), requestDto.getStar());
         System.out.println("project id : " + project.getProject_id());
         System.out.println("project title : " + project.getTitle());
         System.out.println("project description : " + project.getDescription());
-        System.out.println("project templates : " + project.getTemplate());
         System.out.println("project user_id : " + project.getUser_id());
         System.out.println("project lastModifiedDate : " + project.getLastModifiedDate());
 

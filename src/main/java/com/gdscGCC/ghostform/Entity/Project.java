@@ -54,14 +54,14 @@ public class Project {
         return this.lastModifiedDate = LocalDateTime.now();
     }
 
-    public void updateProject(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id, Long star) {
+    public void updateProject(Long project_id, String title, String description, String content, HashMap<String, Object> variables, Long user_id, LocalDateTime lastModifiedDate, Long star) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
-        this.lastModifiedDate = setLastModifiedDate();
         this.content = content;
         this.variables = variables;
         this.user_id = user_id;
+        this.lastModifiedDate = setLastModifiedDate();
         this.star = star;
 //        this.run_id = run_id;
     }
