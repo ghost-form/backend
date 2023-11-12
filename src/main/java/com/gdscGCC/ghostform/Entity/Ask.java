@@ -10,4 +10,9 @@ import java.util.Map;
 public class Ask {
     private String key;
     private String value;
+
+    public Ask(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
 }

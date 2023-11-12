@@ -1,27 +1,39 @@
 package com.gdscGCC.ghostform.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gdscGCC.ghostform.Dto.Ask.AskListRequestDto;
 import com.gdscGCC.ghostform.Dto.Ask.AskRequestDto;
+import com.gdscGCC.ghostform.Dto.Ask.CsvAskResponseDto;
 import com.gdscGCC.ghostform.Dto.ChatGPT.ChatGPTResponseDto;
 import com.gdscGCC.ghostform.Dto.Project.ProjectRequestDto;
 import com.gdscGCC.ghostform.Dto.Project.ProjectResponseDto;
-import com.gdscGCC.ghostform.Dto.Variable.VariableRequestDto;
+import com.gdscGCC.ghostform.Dto.Run.RunRequestDto;
+import com.gdscGCC.ghostform.Dto.Run.RunResponseDto;
 import com.gdscGCC.ghostform.Entity.Ask;
 import com.gdscGCC.ghostform.Entity.Project;
+import com.gdscGCC.ghostform.Entity.Run;
+import com.gdscGCC.ghostform.Entity.RunStatus;
 import com.gdscGCC.ghostform.Service.ChatGPTService;
+import com.gdscGCC.ghostform.Service.CsvService;
 import com.gdscGCC.ghostform.Service.ProjectService;
-import com.gdscGCC.ghostform.Service.VariableService;
+import com.gdscGCC.ghostform.Service.RunService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -31,8 +43,8 @@ import java.util.List;
 public class ProjectAPIController {
     private final ProjectService projectService;
     private final ChatGPTService chatGPTService;
-    private final VariableService variableService;
-
+    private final RunService runService;
+    private final CsvService csvService;
 
 
     /** 한 개의 프로젝트 조회 */
@@ -68,10 +80,10 @@ public class ProjectAPIController {
 
     /** ChatGPT로부터 Stream 형태의 답변 받아오기 */
     @PostMapping(value = "/{project_id}/ask", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> makeQuestionStream (@PathVariable Long project_id, @RequestBody AskRequestDto askRequestDto) {
+    public Flux<String> makeQuestionStream (@PathVariable Long project_id, @RequestBody AskListRequestDto askListRequestDto) {
         ProjectResponseDto project = projectService.findById(project_id);
         String question = project.getContent();
-        for (Ask a : askRequestDto.getAskList()) {
+        for (Ask a : askListRequestDto.getAskList()) {
             question = question.replace("{{" + a.getKey() + "}}", a.getValue());
         }
         try {
@@ -84,10 +96,10 @@ public class ProjectAPIController {
 
     /** ChatGPT로부터 JSON 형태의 답변 받아오기 */
     @PostMapping(value = "/{project_id}/ask/json")
-    public ResponseEntity<ChatGPTResponseDto> makeQuestion (@PathVariable Long project_id, @RequestBody AskRequestDto askRequestDto) {
+    public ResponseEntity<ChatGPTResponseDto> makeQuestion (@PathVariable Long project_id, @RequestBody AskListRequestDto askListRequestDto) {
         ProjectResponseDto project = projectService.findById(project_id);
         String question = project.getContent();
-        for (Ask a : askRequestDto.getAskList()) {
+        for (Ask a : askListRequestDto.getAskList()) {
             question = question.replace("{{" + a.getKey() + "}}", a.getValue());
         }
         ChatGPTResponseDto chatGPTResponseDto = null;
@@ -99,41 +111,56 @@ public class ProjectAPIController {
         return ResponseEntity.status(HttpStatus.OK).body(chatGPTResponseDto);
     }
 
+
     /** Project의 모든 변수 조회
      * RequestParameter로 project_id를 받아옴*/
     @GetMapping("/{project_id}/variables")
-    public ResponseEntity<HashMap<String, Object>> getAllVariables(@PathVariable Long project_id){
-        return ResponseEntity.status(HttpStatus.OK).body(variableService.getAllVariables(project_id));
-    }
-
-    /** Project의 특정 변수 하나 조회
-     * RequestParameter로 project_id 및 variable_key를 받아옴*/
-    @GetMapping("/{project_id}/variable")
-    public ResponseEntity<Object> getOneVariables(@PathVariable Long project_id, @RequestParam String key){
-        return ResponseEntity.status(HttpStatus.OK).body(variableService.getOneVariable(project_id, key));
+    public ResponseEntity<String> getAllVariables(@PathVariable Long project_id){
+        return ResponseEntity.status(HttpStatus.OK).body(projectService.findById(project_id).getVariables());
     }
 
     /** Project에 한 개의 변수 생성
      * RequestParameter로 project_id를 받아옴
      * RequestBody로 생성할 JSON을 받아옴 */
     @PostMapping("/{project_id}/variables")
-    public HashMap<String, Object> createOneVariable(@PathVariable Long project_id, @RequestBody HashMap<String, Object> map){
-        return variableService.create(project_id, map);
+    public ResponseEntity<ProjectResponseDto> updateVariable(@PathVariable Long project_id, @RequestBody String variable) {
+        ProjectResponseDto responseDto = projectService.findById(project_id);
+        ProjectRequestDto requestDto = new ProjectRequestDto(responseDto);
+        requestDto.setVariables(variable);
+        requestDto.setLastModifiedDate();
+        projectService.update(requestDto.getProject_id(), requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(projectService.findById(project_id));
     }
 
-    /** Project에 한 개의 변수 삭제
-     * RequestParameter로 project_id를 받아옴
-     * RequestParameter로 삭제할 변수 key를 받아옴 */
-    @DeleteMapping("/{project_id}/variables")
-    public void deleteOneVariable(@PathVariable Long project_id, @RequestParam String deleteKey){
-        variableService.deleteOne(project_id, deleteKey);
+    @GetMapping("/{project_id}/run")
+    public ResponseEntity<List<Run>> getRunList(@PathVariable Long project_id) {
+        ProjectResponseDto responseDto = projectService.findById(project_id);
+        List<Run> runs = responseDto.getRuns();
+        return ResponseEntity.status(HttpStatus.OK).body(runs);
     }
 
-    /** 한 개의 변수 수정
-     * RequestParameter로 project_id를 받아옴
-     * RequestBody로 수정할 변수 key와 value를 받아옴*/
-    @PutMapping("/{project_id}/variables")
-    public void updateOneVariable(@PathVariable Long project_id, @RequestBody VariableRequestDto variableRequestDto){
-        variableService.updateOneVariable(project_id, variableRequestDto);
+    @PostMapping("/{project_id}/run")
+    public ResponseEntity<RunResponseDto> addRun(@PathVariable Long project_id, @RequestBody RunRequestDto requestDto) {
+        Project project = projectService.findByIdGetProject(project_id);
+        requestDto.setProject(project);
+        requestDto.setStatus(RunStatus.START);
+        Run run = requestDto.toEntity();
+        System.out.println(run.toString());
+        project.addRun(run);
+        runService.save(requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new RunResponseDto(run));
     }
+
+    /*
+    @PostMapping("/{project_id}/upload-file")
+    public ResponseEntity<List<Run>> addRunList(@PathVariable Long project_id, @RequestParam MultipartFile multipartFile) {
+        try {
+            CsvAskResponseDto csvAskResponseDto = csvService.read((FileInputStream) multipartFile.getInputStream());
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    */
+
 }

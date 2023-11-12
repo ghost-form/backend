@@ -1,7 +1,9 @@
 package com.gdscGCC.ghostform.Entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
@@ -31,9 +33,7 @@ public class Project {
 
     /** 템플릿 변수들
      * key로 Long id, String name, String type이 존재 */
-    @Type(JsonType.class)
-    @Column(name = "variables", columnDefinition = "text")
-    private HashMap<String, Object> variables = new HashMap<>();
+    private String variables;
 
     /** 사용자 id */
     private Long user_id;
@@ -44,18 +44,16 @@ public class Project {
     /** 프로젝트 STAR */
     private Long star;
 
-//    /** 실행 테이블 */
-//    @OneToMany
-//    @JoinColumn(name = "run_id")
-//    private Run run_id;
-
+    /** 실행 테이블 */
+    @OneToMany
+    @JoinColumn(name = "run_id")
+    private List<Run> run = new ArrayList<>();
 
     public LocalDateTime setLastModifiedDate() {
         return this.lastModifiedDate = LocalDateTime.now();
     }
 
-    public void updateProject(Long project_id, String title, String description, String content, HashMap<String, Object> variables, Long user_id, LocalDateTime lastModifiedDate, Long star) {
-        this.project_id = project_id;
+    public void updateProject(String title, String description, String content, String variables, Long user_id, LocalDateTime lastModifiedDate, Long star) {
         this.title = title;
         this.description = description;
         this.content = content;
@@ -63,14 +61,10 @@ public class Project {
         this.user_id = user_id;
         this.lastModifiedDate = setLastModifiedDate();
         this.star = star;
-//        this.run_id = run_id;
     }
 
-
-
     @Builder
-    public Project(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id, Long star) {
-        this.project_id = project_id;
+    public Project(String title, String description, LocalDateTime lastModifiedDate, String content, String variables, Long user_id, Long star) {
         this.title = title;
         this.description = description;
         this.lastModifiedDate = setLastModifiedDate();
@@ -78,6 +72,9 @@ public class Project {
         this.variables = variables;
         this.user_id = user_id;
         this.star = star;
-//        this.run_id = run_id;
+    }
+
+    public void addRun(Run run) {
+        this.run.add(run);
     }
 }

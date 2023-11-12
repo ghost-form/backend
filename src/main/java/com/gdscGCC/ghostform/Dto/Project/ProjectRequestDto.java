@@ -22,19 +22,16 @@ public class ProjectRequestDto {
     private String title;
     private String description;
     private String content;
-    private HashMap<String, Object> variables = new HashMap<>();
+    private String variables;
     private Long user_id;
     private LocalDateTime lastModifiedDate;
     private Long star;
-//    private Run run_id;
-
-
 
     public LocalDateTime setLastModifiedDate() {
-        return this.lastModifiedDate = LocalDateTime.now();
+        return LocalDateTime.now();
     }
     @Builder
-    public ProjectRequestDto(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id, Long star) {
+    public ProjectRequestDto(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, String variables, Long user_id) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
@@ -42,20 +39,29 @@ public class ProjectRequestDto {
         this.content = content;
         this.variables = variables;
         this.user_id = user_id;
-        this.star = star;
-//        this.run = run;
+        this.star = 0L;
+    }
+
+    public ProjectRequestDto(ProjectResponseDto project) {
+        this.project_id = project.getProject_id();
+        this.title = project.getTitle();
+        this.description = project.getDescription();
+        this.lastModifiedDate = project.getLastModifiedDate();
+        this.content = project.getContent();
+        this.variables = project.getVariables();
+        this.user_id = project.getUser_id();
+        this.star = project.getStar();
     }
 
     public Project toEntity(){
         return Project.builder()
-                .project_id(this.project_id)
                 .title(this.title)
                 .description(this.description)
                 .lastModifiedDate(this.lastModifiedDate)
                 .content(this.content)
                 .variables(this.variables)
                 .user_id(user_id)
-//                .run_id(this.run_id)
+                .star(star)
                 .build();
     }
 }
