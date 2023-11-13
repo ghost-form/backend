@@ -10,8 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface StaredProjectRepository extends JpaRepository<StaredProject, Long> {
-    List<Project> findByTitleContaining(String keyword);
     StaredProject findByProjectAndUser(Project board, User user);
-
     Page<StaredProject> findAllByStaredIs(Pageable pageable, boolean stared);
 }

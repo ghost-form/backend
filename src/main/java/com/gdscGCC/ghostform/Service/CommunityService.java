@@ -34,13 +34,13 @@ public class CommunityService {
             project.setStar(project.getStar() + 1);
             StaredProject staredProject = new StaredProject(project, user); // true 처리
             staredProjectRepository.save(staredProject);
-            return "좋아요 처리 완료";
+            return "Star";
         } else {
             // 좋아요를 누른적 있다면 취소 처리 후 테이블 삭제
             StaredProject staredProject = staredProjectRepository.findByProjectAndUser(project, user);
             staredProject.unStarredProject(project);
             staredProjectRepository.deleteById(staredProject.getId());
-            return "좋아요 취소";
+            return "Undo star";
         }
 
     }
@@ -52,5 +52,32 @@ public class CommunityService {
         staredProjects.stream().forEach(i -> projectResponseDtoList.add(new ProjectResponseDto(i.getProject())));
 
         return projectResponseDtoList;
+    }
+
+    @Transactional
+    public List<ProjectResponseDto> findBestProjects(Pageable pageable) {
+        // star 받은 project 중에서 탐색
+        Page<Project> projects = projectRepository.findByStarGreaterThanEqualAndStarIsNot(pageable, 10L, 0);
+        List<ProjectResponseDto> projectResponseDtoList = new ArrayList<>();
+        projects.stream().forEach(i -> projectResponseDtoList.add(new ProjectResponseDto(i)));
+
+        return projectResponseDtoList;
+    }
+
+    /** user_id 변경, star 초기화, project_id 재발급, 공개 범위도 초기화 */
+    public ProjectResponseDto fork(Long project_id, Long user_id) {
+        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+        Project forkedProject = Project.builder().build();
+        forkedProject.updateProject(forkedProject.getProject_id(),
+                                    project.getTitle(),
+                                    project.getDescription(),
+                                    project.getLastModifiedDate(),
+                                    project.getContent(),
+                                    project.getVariables(),
+                                    user_id // 이 함수를 호출한 user_id로 fork한 프로젝트의 사용자 변경
+//                                    forkedProject.getRun_id()
+                                    );
+        return new ProjectResponseDto(projectRepository.save(forkedProject));
+
     }
 }

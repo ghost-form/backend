@@ -54,7 +54,7 @@ public class VariableService {
         }
 
         // 추가 후 업데이트
-        project.updateProject(project.getProject_id(), project.getTitle(), project.getDescription(), project.getLastModifiedDate(), project.getContent(), project.getVariables(), project.getUser_id(), project.getStar());
+        project.updateProject(project.getProject_id(), project.getTitle(), project.getDescription(), project.getLastModifiedDate(), project.getContent(), project.getVariables(), project.getUser_id());
 
         return map;
     }
@@ -75,7 +75,7 @@ public class VariableService {
         }
 
         // 삭제 후 업데이트
-        project.updateProject(project.getProject_id(), project.getTitle(), project.getDescription(), project.getLastModifiedDate(), project.getContent(), project.getVariables(), project.getUser_id(), project.getStar());
+        project.updateProject(project.getProject_id(), project.getTitle(), project.getDescription(), project.getLastModifiedDate(), project.getContent(), project.getVariables(), project.getUser_id());
 
     }
 
@@ -99,7 +99,7 @@ public class VariableService {
         }
 
         // 수정 후 업데이트
-        project.updateProject(project.getProject_id(), project.getTitle(), project.getDescription(), project.getLastModifiedDate(), project.getContent(), project.getVariables(), project.getUser_id(), project.getStar());
+        project.updateProject(project.getProject_id(), project.getTitle(), project.getDescription(), project.getLastModifiedDate(), project.getContent(), project.getVariables(), project.getUser_id());
     }
 
 

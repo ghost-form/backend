@@ -6,6 +6,7 @@ import java.util.HashMap;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 
 
@@ -42,7 +43,7 @@ public class Project {
     private LocalDateTime lastModifiedDate;
 
     /** 프로젝트 STAR */
-    private Long star = 0L;
+    private Long star;
 
     /** 프로젝트 공개 범위 */
     @Enumerated(EnumType.STRING)
@@ -53,27 +54,33 @@ public class Project {
 //    @JoinColumn(name = "run_id")
 //    private Run run_id;
 
+    /** 프로젝트 star 및 공개 범위 초기화 */
+    @PrePersist
+    public void prePersist() {
+        this.star = (this.star == null ? 0 : this.star);
+        this.visibility = (this.visibility == null ? Visibility.PRIVATE : this.visibility);
+    }
+
 
     public LocalDateTime setLastModifiedDate() {
         return this.lastModifiedDate = LocalDateTime.now();
     }
 
-    public void updateProject(Long project_id, String title, String description, String content, HashMap<String, Object> variables, Long user_id, LocalDateTime lastModifiedDate, Long star) {
+    public void updateProject(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
+        this.lastModifiedDate = setLastModifiedDate();
         this.content = content;
         this.variables = variables;
         this.user_id = user_id;
-        this.lastModifiedDate = setLastModifiedDate();
-        this.star = star;
 //        this.run_id = run_id;
     }
 
 
 
     @Builder
-    public Project(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id, Long star) {
+    public Project(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
@@ -81,13 +88,13 @@ public class Project {
         this.content = content;
         this.variables = variables;
         this.user_id = user_id;
-        this.star = star;
 //        this.run_id = run_id;
     }
 
-    private enum Visibility {
+    public enum Visibility {
         PRIVATE, PUBLIC
     }
+
 }
 
 

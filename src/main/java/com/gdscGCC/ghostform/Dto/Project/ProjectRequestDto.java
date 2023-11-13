@@ -25,7 +25,6 @@ public class ProjectRequestDto {
     private HashMap<String, Object> variables = new HashMap<>();
     private Long user_id;
     private LocalDateTime lastModifiedDate;
-    private Long star;
 //    private Run run_id;
 
 
@@ -34,7 +33,7 @@ public class ProjectRequestDto {
         return this.lastModifiedDate = LocalDateTime.now();
     }
     @Builder
-    public ProjectRequestDto(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id, Long star) {
+    public ProjectRequestDto(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
@@ -42,7 +41,6 @@ public class ProjectRequestDto {
         this.content = content;
         this.variables = variables;
         this.user_id = user_id;
-        this.star = star;
 //        this.run = run;
     }
 
@@ -54,7 +52,7 @@ public class ProjectRequestDto {
                 .lastModifiedDate(this.lastModifiedDate)
                 .content(this.content)
                 .variables(this.variables)
-                .user_id(user_id)
+                .user_id(this.user_id)
 //                .run_id(this.run_id)
                 .build();
     }

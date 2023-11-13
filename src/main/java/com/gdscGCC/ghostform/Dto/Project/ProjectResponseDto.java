@@ -17,6 +17,7 @@ public class ProjectResponseDto {
     private Long user_id;
     private LocalDateTime lastModifiedDate;
     private Long star;
+    private Project.Visibility visibility;
 //    private Run run_id;
 
     public ProjectResponseDto(Project project) {
@@ -28,6 +29,7 @@ public class ProjectResponseDto {
         this.variables = project.getVariables();
         this.user_id = project.getUser_id();
         this.star = project.getStar();
+        this.visibility = project.getVisibility();
 //        this.run_id = project.getRun_id();
     }
 }

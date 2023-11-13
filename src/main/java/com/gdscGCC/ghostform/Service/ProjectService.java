@@ -45,7 +45,7 @@ public class ProjectService {
     @Transactional
     public ProjectResponseDto update(Long project_id, ProjectRequestDto requestDto){
         Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
-        project.updateProject(requestDto.getProject_id(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getContent(), requestDto.getVariables(), requestDto.getUser_id(), requestDto.getLastModifiedDate(), requestDto.getStar());
+        project.updateProject(requestDto.getProject_id(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getLastModifiedDate(), requestDto.getContent(), requestDto.getVariables(), requestDto.getUser_id());
         return new ProjectResponseDto(project);
     }
 
