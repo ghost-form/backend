@@ -6,9 +6,12 @@ import com.gdscGCC.ghostform.Entity.Project;
 import com.gdscGCC.ghostform.Repository.ProjectRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,12 +30,15 @@ public class ProjectService {
 
     // DB에서 모든 row 조회
     @Transactional
-    public List<Project> findAll(){
-        List<Project> projectList = projectRepository.findAll();
-        if (projectList.isEmpty()) {
+    public List<ProjectResponseDto> findAll(Pageable pageable){
+        Page<Project> projects = projectRepository.findAll(pageable);
+        if (projects.isEmpty()) {
             throw new IllegalArgumentException("해당 프로젝트 리스트가 없습니다.");
         }
-        return projectList;
+        List<ProjectResponseDto> projectResponseDtoList = new ArrayList<>();
+        projects.stream().forEach(i -> projectResponseDtoList.add(new ProjectResponseDto(i)));
+
+        return projectResponseDtoList;
     }
     // DB에서 하나의 row 조회
     @Transactional

@@ -14,6 +14,8 @@ import com.gdscGCC.ghostform.Service.VariableService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +45,10 @@ public class ProjectAPIController {
 
     /** 모든 프로젝트 조회 */
     @GetMapping("/all")
-    public List<Project> projectListGet(){
-        return projectService.findAll();
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<ProjectResponseDto>> projectListGet(@PageableDefault(size = 5) Pageable pageable){
+
+        return ResponseEntity.status(HttpStatus.OK).body(projectService.findAll(pageable));
     }
 
     /** 한 개의 프로젝트 생성 */

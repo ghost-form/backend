@@ -32,8 +32,8 @@ public class CommunityAPIController {
     /** 모든 프로젝트 조회 - 프로젝트 리스팅 */
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public List<Project> projectListGet(){
-        return projectService.findAll();
+    public ResponseEntity<List<ProjectResponseDto>> projectListGet(@PageableDefault(size = 5) Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK).body(projectService.findAll(pageable));
     }
 
 
