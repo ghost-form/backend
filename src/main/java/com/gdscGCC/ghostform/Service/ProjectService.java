@@ -62,4 +62,12 @@ public class ProjectService {
         projectRepository.deleteById(project_id);
         System.out.println("project id : " + project.getProject_id() + "project was deleted.");
     }
+
+    /** 프로젝트 공개범위 변경 */
+    @Transactional
+    public String updateVisibility(Long project_id, String visibility) {
+        Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+        return project.updateVisibility(visibility);
+
+    }
 }

@@ -9,6 +9,7 @@ import com.gdscGCC.ghostform.Repository.StaredProjectRepository;
 import com.gdscGCC.ghostform.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.aot.generate.AccessControl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -65,6 +66,7 @@ public class CommunityService {
     }
 
     /** user_id 변경, star 초기화, project_id 재발급, 공개 범위도 초기화 */
+    @Transactional
     public ProjectResponseDto fork(Long project_id, Long user_id) {
         Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
         Project forkedProject = Project.builder().build();
@@ -79,5 +81,17 @@ public class CommunityService {
                                     );
         return new ProjectResponseDto(projectRepository.save(forkedProject));
 
+    }
+
+    /** 공개된 프로젝트만 조회 */
+    @Transactional
+    public List<ProjectResponseDto> findPublic(Pageable pageable) {
+        Project.Visibility visibility = Project.Visibility.PRIVATE;
+        Page<Project> projects = projectRepository.findByVisibilityIs(pageable, visibility);
+
+        List<ProjectResponseDto> projectResponseDtoList = new ArrayList<>();
+        projects.stream().forEach(i -> projectResponseDtoList.add(new ProjectResponseDto(i)));
+
+        return projectResponseDtoList;
     }
 }

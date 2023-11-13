@@ -76,6 +76,18 @@ public class Project {
         this.user_id = user_id;
 //        this.run_id = run_id;
     }
+    public String updateVisibility(String visibility) {
+        switch (visibility.toUpperCase()) {
+            case "PRIVATE":
+                this.visibility = Visibility.PRIVATE;
+                return "PRIVATE";
+            case "PUBLIC":
+                this.visibility = Visibility.PUBLIC;
+                return "PUBLIC";
+            default:
+                throw new IllegalArgumentException("Invalid visibility string: " + visibility);
+        }
+    }
 
 
 

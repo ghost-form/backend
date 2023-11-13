@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAll(Pageable pageable);
     Page<Project> findByStarGreaterThanEqualAndStarIsNot(Pageable pageable, Long stars, int zero);
+    Page<Project> findByVisibilityIs(Pageable pageable, Project.Visibility visibility);
 }

@@ -36,6 +36,12 @@ public class CommunityAPIController {
         return ResponseEntity.status(HttpStatus.OK).body(projectService.findAll(pageable));
     }
 
+    /** 공개된 프로젝트만 조회 - 프로젝트 리스팅 */
+    @GetMapping("")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<ProjectResponseDto>> publicProjectListGet(@PageableDefault(size = 5) Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK).body(communityService.findPublic(pageable));
+    }
 
     /** 프로젝트 Star 한 번 누르면 star++, 한 번 더 누르면 star-- */
     /** 프로젝트 Star 기입 시 StarredProject Entity에 사용자와 프로젝트간 관계 생성 */
@@ -59,9 +65,9 @@ public class CommunityAPIController {
         return ResponseEntity.status(HttpStatus.OK).body(communityService.findBestProjects(pageable));
     }
 
-    /** 사용자 정보를 바꿔, 프로젝트 Fork 해오기 */
-    /** github도 uri endpoint가 fork네요.. */
-    /** Path변수로 사용자 id 불러오게 하지 말고 Auth로 불러오게 하기 */
+    /** 사용자 정보를 바꿔, 프로젝트 Fork 해오기
+    * github도 uri endpoint가 fork네요..
+    * Path변수로 사용자 id 불러오게 하지 말고 Auth로 불러오게 하기 */
     @PostMapping("/{project_id}/{user_id}/fork")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ProjectResponseDto> fork(@PathVariable Long project_id, @PathVariable Long user_id) { // 로그인 기능 구현하면 user_id로 사용자 정보 받오게 하지 않고 로그인 상태로 받아오게끔
