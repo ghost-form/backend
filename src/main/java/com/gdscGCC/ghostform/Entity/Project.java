@@ -42,7 +42,11 @@ public class Project {
     private LocalDateTime lastModifiedDate;
 
     /** 프로젝트 STAR */
-    private Long star;
+    private Long star = 0L;
+
+    /** 프로젝트 공개 범위 */
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
 
 //    /** 실행 테이블 */
 //    @OneToMany
@@ -80,4 +84,10 @@ public class Project {
         this.star = star;
 //        this.run_id = run_id;
     }
+
+    private enum Visibility {
+        PRIVATE, PUBLIC
+    }
 }
+
+

@@ -62,7 +62,6 @@ public class ProjectAPIController {
     /** 한 개의 프로젝트 수정 */
     @PutMapping("/{project_id}")
     public ResponseEntity<ProjectResponseDto> projectUpdate(@PathVariable Long project_id, @RequestBody ProjectRequestDto requestDto){
-        System.out.println("id는!!! : " + project_id);
         return ResponseEntity.status(HttpStatus.OK).body(projectService.update(project_id, requestDto));
     }
 
