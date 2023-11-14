@@ -12,4 +12,5 @@ import java.util.List;
 public interface StaredProjectRepository extends JpaRepository<StaredProject, Long> {
     StaredProject findByProjectAndUser(Project board, User user);
     Page<StaredProject> findAllByStaredIs(Pageable pageable, boolean stared);
+    Page<StaredProject> findAllByStaredIsAndUserIs(Pageable pageable, boolean stared, Long user_id);
 }

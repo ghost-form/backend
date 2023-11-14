@@ -47,8 +47,8 @@ public class CommunityService {
     }
 
     @Transactional
-    public List<ProjectResponseDto> findByStared(Pageable pageable) {
-        Page<StaredProject> staredProjects = staredProjectRepository.findAllByStaredIs(pageable, true);
+    public List<ProjectResponseDto> findByStared(Pageable pageable, Long user_id) {
+        Page<StaredProject> staredProjects = staredProjectRepository.findAllByStaredIsAndUserIs(pageable, true, user_id);
         List<ProjectResponseDto> projectResponseDtoList = new ArrayList<>();
         staredProjects.stream().forEach(i -> projectResponseDtoList.add(new ProjectResponseDto(i.getProject())));
 
@@ -80,7 +80,6 @@ public class CommunityService {
 //                                    forkedProject.getRun_id()
                                     );
         return new ProjectResponseDto(projectRepository.save(forkedProject));
-
     }
 
     /** 공개된 프로젝트만 조회 */

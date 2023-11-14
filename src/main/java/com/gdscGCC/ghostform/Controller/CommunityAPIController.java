@@ -51,11 +51,11 @@ public class CommunityAPIController {
         return ResponseEntity.status(HttpStatus.OK).body(communityService.setStar(project_id, user_id));
     }
 
-    /** 내가 Starred 한 프로젝트만 조회 */
-    @GetMapping("/staredProjects")
+    /** user_{user_id}가 Starred 한 프로젝트만 조회 */
+    @GetMapping("/{user_id}/staredProjects")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ProjectResponseDto>> staredProjectListGet(@PageableDefault(size = 5) Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(communityService.findByStared(pageable));
+    public ResponseEntity<List<ProjectResponseDto>> staredProjectListGet(@PageableDefault(size = 5) Pageable pageable, @PathVariable Long user_id) {
+        return ResponseEntity.status(HttpStatus.OK).body(communityService.findByStared(pageable, user_id));
     }
 
     /** Star 수 10개 넘은 프로젝트 조회 */
