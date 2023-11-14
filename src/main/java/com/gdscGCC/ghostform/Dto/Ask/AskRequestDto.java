@@ -1,15 +1,18 @@
 package com.gdscGCC.ghostform.Dto.Ask;
 
-
-import com.gdscGCC.ghostform.Entity.Ask;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
 public class AskRequestDto {
-    long id;
-    List<Ask> askList;
+    private String key;
+    private String value;
+
+    @Builder
+    public AskRequestDto(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
 }

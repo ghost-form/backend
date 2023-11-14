@@ -2,6 +2,7 @@ package com.gdscGCC.ghostform.Service;
 
 import com.gdscGCC.ghostform.Dto.Project.ProjectRequestDto;
 import com.gdscGCC.ghostform.Dto.Project.ProjectResponseDto;
+import com.gdscGCC.ghostform.Dto.Run.RunRequestDto;
 import com.gdscGCC.ghostform.Entity.Project;
 import com.gdscGCC.ghostform.Repository.ProjectRepository;
 import jakarta.transaction.Transactional;
@@ -10,8 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +31,13 @@ public class ProjectService {
     }
 
     /** DB에서 모든 row 조회 */
+    @Transactional
+    public void addRun(Long project_id, RunRequestDto requestDto) {
+        Project project = projectRepository.findById(project_id).orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+        project.addRun(requestDto.toEntity());
+    }
+
+    // DB에서 모든 row 조회
     @Transactional
     public List<ProjectResponseDto> findAll(Pageable pageable){
         Page<Project> projects = projectRepository.findAll(pageable);
@@ -48,6 +58,12 @@ public class ProjectService {
     }
 
     /** DB에서 하나의 row 수정 */
+    @Transactional
+    public Project findByIdGetProject(Long project_id) {
+        return projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+    }
+
+    // DB에서 하나의 row 수정
     @Transactional
     public ProjectResponseDto update(Long project_id, ProjectRequestDto requestDto){
         Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));

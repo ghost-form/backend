@@ -6,7 +6,6 @@ import java.util.HashMap;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 
 
@@ -32,9 +31,7 @@ public class Project {
 
     /** 템플릿 변수들
      * key로 Long id, String name, String type이 존재 */
-    @Type(JsonType.class)
-    @Column(name = "variables", columnDefinition = "text")
-    private HashMap<String, Object> variables = new HashMap<>();
+    private String variables;
 
     /** 사용자 id */
     private Long user_id;
@@ -61,19 +58,24 @@ public class Project {
         this.visibility = (this.visibility == null ? Visibility.PRIVATE : this.visibility);
     }
 
+    /** 실행 테이블 */
+    @OneToMany
+    @JoinColumn(name = "run_id")
+    private List<Run> run = new ArrayList<>();
 
     public LocalDateTime setLastModifiedDate() {
         return this.lastModifiedDate = LocalDateTime.now();
     }
 
-    public void updateProject(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id) {
+    public void updateProject(Long project_id, String title, String description, String content, String variables, Long user_id, LocalDateTime lastModifiedDate, Long star) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
-        this.lastModifiedDate = setLastModifiedDate();
         this.content = content;
         this.variables = variables;
         this.user_id = user_id;
+        this.lastModifiedDate = setLastModifiedDate();
+        this.star = star;
 //        this.run_id = run_id;
     }
     public String updateVisibility(String visibility) {
@@ -92,7 +94,7 @@ public class Project {
 
 
     @Builder
-    public Project(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, HashMap<String, Object> variables, Long user_id) {
+    public Project(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, String variables, Long user_id, Long star) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
@@ -100,13 +102,14 @@ public class Project {
         this.content = content;
         this.variables = variables;
         this.user_id = user_id;
-//        this.run_id = run_id;
+        this.star = star;
+    }
+
+    public void addRun(Run run) {
+        this.run.add(run);
     }
 
     public enum Visibility {
         PRIVATE, PUBLIC
     }
-
 }
-
-
