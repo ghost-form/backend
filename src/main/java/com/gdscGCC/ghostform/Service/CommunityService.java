@@ -28,7 +28,7 @@ public class CommunityService {
     @Transactional
     public String setStar(Long project_id, Long user_id){
         Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
-        User user = userRepository.findById(user_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
+        User user = userRepository.findById(user_id).orElseThrow(()-> new IllegalArgumentException("해당 유저가 없습니다. id=" + project_id));
 
         if(staredProjectRepository.findByProjectAndUser(project, user) == null) {
             // 좋아요를 누른적 없다면 StarredProject 생성 후, 좋아요 처리
@@ -65,7 +65,8 @@ public class CommunityService {
         return projectResponseDtoList;
     }
 
-    /** user_id 변경, star 초기화, project_id 재발급, 공개 범위도 초기화 */
+    /** fork : user_id 변경, star 초기화, project_id 재발급, 공개 범위도 초기화
+     * project_id를 가지는 기존 프로젝트를 user_id를 가지는 user가 fork */
     @Transactional
     public ProjectResponseDto fork(Long project_id, Long user_id) {
         Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
