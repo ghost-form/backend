@@ -2,13 +2,10 @@ package com.gdscGCC.ghostform.Entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 
 @Getter
@@ -49,22 +46,54 @@ public class Project {
     @JoinColumn(name = "run_id")
     private List<Run> run = new ArrayList<>();
 
+    /** 프로젝트 공개 범위 */
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
+
+
+
+
+    /** 프로젝트 star 및 공개 범위 초기화 */
+    @PrePersist
+    public void prePersist() {
+        this.star = (this.star == null ? 0 : this.star);
+        this.visibility = (this.visibility == null ? Visibility.PRIVATE : this.visibility);
+    }
+
+
+
     public LocalDateTime setLastModifiedDate() {
         return this.lastModifiedDate = LocalDateTime.now();
     }
 
-    public void updateProject(String title, String description, String content, String variables, Long user_id, LocalDateTime lastModifiedDate, Long star) {
+    public void updateProject(Long project_id, String title, String description, String content, String variables, Long user_id, LocalDateTime lastModifiedDate) {
+        this.project_id = project_id;
         this.title = title;
         this.description = description;
         this.content = content;
         this.variables = variables;
         this.user_id = user_id;
         this.lastModifiedDate = setLastModifiedDate();
-        this.star = star;
+
+    }
+    public String updateVisibility(String visibility) {
+        switch (visibility.toUpperCase()) {
+            case "PRIVATE":
+                this.visibility = Visibility.PRIVATE;
+                return "PRIVATE";
+            case "PUBLIC":
+                this.visibility = Visibility.PUBLIC;
+                return "PUBLIC";
+            default:
+                throw new IllegalArgumentException("Invalid visibility string: " + visibility);
+        }
     }
 
+
+
     @Builder
-    public Project(String title, String description, LocalDateTime lastModifiedDate, String content, String variables, Long user_id, Long star) {
+    public Project(Long project_id, String title, String description, LocalDateTime lastModifiedDate, String content, String variables, Long user_id, Long star) {
+        this.project_id = project_id;
         this.title = title;
         this.description = description;
         this.lastModifiedDate = setLastModifiedDate();
@@ -76,5 +105,9 @@ public class Project {
 
     public void addRun(Run run) {
         this.run.add(run);
+    }
+
+    public enum Visibility {
+        PRIVATE, PUBLIC
     }
 }

@@ -1,18 +1,12 @@
 package com.gdscGCC.ghostform.Dto.Project;
 
 import com.gdscGCC.ghostform.Entity.Project;
-import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 @Setter
 @NoArgsConstructor

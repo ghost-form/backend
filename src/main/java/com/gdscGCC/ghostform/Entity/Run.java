@@ -32,4 +32,10 @@ public class Run {
         this.variables = variables;
         this.status = status;
     }
+
+    public enum RunStatus {
+        START,
+        RUNNING,
+        END
+    }
 }
