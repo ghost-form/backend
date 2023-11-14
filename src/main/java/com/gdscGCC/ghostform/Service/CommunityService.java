@@ -28,7 +28,7 @@ public class CommunityService {
     @Transactional
     public String setStar(Long project_id, Long user_id){
         Project project = projectRepository.findById(project_id).orElseThrow(()-> new IllegalArgumentException("해당 프로젝트가 없습니다. id=" + project_id));
-        User user = userRepository.findById(user_id).orElseThrow(()-> new IllegalArgumentException("해당 유저가 없습니다. id=" + project_id));
+        User user = userRepository.findById(user_id).orElseThrow(()-> new IllegalArgumentException("해당 유저가 없습니다. id=" + user_id));
 
         if(staredProjectRepository.findByProjectAndUser(project, user) == null) {
             // 좋아요를 누른적 없다면 StarredProject 생성 후, 좋아요 처리
@@ -48,7 +48,9 @@ public class CommunityService {
 
     @Transactional
     public List<ProjectResponseDto> findByStared(Pageable pageable, Long user_id) {
-        Page<StaredProject> staredProjects = staredProjectRepository.findAllByStaredIsAndUserIs(pageable, true, user_id);
+        User user = userRepository.findById(user_id).orElseThrow(()-> new IllegalArgumentException("해당 유저가 없습니다. id=" + user_id));
+
+        Page<StaredProject> staredProjects = staredProjectRepository.findAllByStaredIsAndUserIs(pageable, true, user);
         List<ProjectResponseDto> projectResponseDtoList = new ArrayList<>();
         staredProjects.stream().forEach(i -> projectResponseDtoList.add(new ProjectResponseDto(i.getProject())));
 

@@ -37,7 +37,7 @@ public class CommunityAPIController {
     }
 
     /** 공개된 프로젝트만 조회 - 프로젝트 리스팅 */
-    @GetMapping("")
+    @GetMapping("/public")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ProjectResponseDto>> publicProjectListGet(@PageableDefault(size = 5) Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(communityService.findPublic(pageable));
