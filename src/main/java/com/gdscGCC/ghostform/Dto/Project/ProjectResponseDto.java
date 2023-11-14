@@ -1,23 +1,26 @@
 package com.gdscGCC.ghostform.Dto.Project;
 
 import com.gdscGCC.ghostform.Entity.Project;
+import com.gdscGCC.ghostform.Entity.Run;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 
 @Getter
-
+@RequiredArgsConstructor
 public class ProjectResponseDto {
     private Long project_id;
     private String title;
     private String description;
     private String content;
-    private HashMap<String, Object> variables = new HashMap<>();
+    private String variables;
     private Long user_id;
     private LocalDateTime lastModifiedDate;
     private Long star;
-//    private Run run_id;
+    private List<Run> runs;
 
     public ProjectResponseDto(Project project) {
         this.project_id = project.getProject_id();
@@ -28,6 +31,7 @@ public class ProjectResponseDto {
         this.variables = project.getVariables();
         this.user_id = project.getUser_id();
         this.star = project.getStar();
-//        this.run_id = project.getRun_id();
+        this.runs = project.getRun();
     }
+
 }
