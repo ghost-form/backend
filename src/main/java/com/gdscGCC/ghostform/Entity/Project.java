@@ -1,12 +1,11 @@
 package com.gdscGCC.ghostform.Entity;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 
 @Getter
@@ -42,14 +41,17 @@ public class Project {
     /** 프로젝트 STAR */
     private Long star;
 
+    /** 실행 테이블 */
+    @OneToMany
+    @JoinColumn(name = "run_id")
+    private List<Run> run = new ArrayList<>();
+
     /** 프로젝트 공개 범위 */
     @Enumerated(EnumType.STRING)
     private Visibility visibility;
 
-//    /** 실행 테이블 */
-//    @OneToMany
-//    @JoinColumn(name = "run_id")
-//    private Run run_id;
+
+
 
     /** 프로젝트 star 및 공개 범위 초기화 */
     @PrePersist
@@ -58,16 +60,13 @@ public class Project {
         this.visibility = (this.visibility == null ? Visibility.PRIVATE : this.visibility);
     }
 
-    /** 실행 테이블 */
-    @OneToMany
-    @JoinColumn(name = "run_id")
-    private List<Run> run = new ArrayList<>();
+
 
     public LocalDateTime setLastModifiedDate() {
         return this.lastModifiedDate = LocalDateTime.now();
     }
 
-    public void updateProject(Long project_id, String title, String description, String content, String variables, Long user_id, LocalDateTime lastModifiedDate, Long star) {
+    public void updateProject(Long project_id, String title, String description, String content, String variables, Long user_id, LocalDateTime lastModifiedDate) {
         this.project_id = project_id;
         this.title = title;
         this.description = description;
@@ -75,8 +74,7 @@ public class Project {
         this.variables = variables;
         this.user_id = user_id;
         this.lastModifiedDate = setLastModifiedDate();
-        this.star = star;
-//        this.run_id = run_id;
+
     }
     public String updateVisibility(String visibility) {
         switch (visibility.toUpperCase()) {

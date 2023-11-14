@@ -7,10 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface StaredProjectRepository extends JpaRepository<StaredProject, Long> {
     StaredProject findByProjectAndUser(Project board, User user);
-    Page<StaredProject> findAllByStaredIs(Pageable pageable, boolean stared);
     Page<StaredProject> findAllByStaredIsAndUserIs(Pageable pageable, boolean stared, User user);
 }

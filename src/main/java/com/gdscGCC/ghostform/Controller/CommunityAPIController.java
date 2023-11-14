@@ -1,7 +1,6 @@
 package com.gdscGCC.ghostform.Controller;
 
 import com.gdscGCC.ghostform.Dto.Project.ProjectResponseDto;
-import com.gdscGCC.ghostform.Entity.Project;
 
 import com.gdscGCC.ghostform.Service.CommunityService;
 import com.gdscGCC.ghostform.Service.ProjectService;

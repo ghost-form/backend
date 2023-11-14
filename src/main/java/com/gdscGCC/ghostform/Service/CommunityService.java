@@ -9,7 +9,6 @@ import com.gdscGCC.ghostform.Repository.StaredProjectRepository;
 import com.gdscGCC.ghostform.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.aot.generate.AccessControl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -76,11 +75,10 @@ public class CommunityService {
         forkedProject.updateProject(forkedProject.getProject_id(),
                                     project.getTitle(),
                                     project.getDescription(),
-                                    project.getLastModifiedDate(),
                                     project.getContent(),
                                     project.getVariables(),
-                                    user_id // 이 함수를 호출한 user_id로 fork한 프로젝트의 사용자 변경
-//                                    forkedProject.getRun_id()
+                                    user_id,
+                                    project.getLastModifiedDate()                                     // 이 함수를 호출한 user_id로 fork한 프로젝트의 사용자 변경
                                     );
         return new ProjectResponseDto(projectRepository.save(forkedProject));
     }
