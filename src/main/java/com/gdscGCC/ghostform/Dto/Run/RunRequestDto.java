@@ -2,7 +2,6 @@ package com.gdscGCC.ghostform.Dto.Run;
 
 import com.gdscGCC.ghostform.Entity.Project;
 import com.gdscGCC.ghostform.Entity.Run;
-import com.gdscGCC.ghostform.Entity.RunStatus;
 import lombok.*;
 
 @Getter
@@ -15,7 +14,7 @@ public class RunRequestDto {
     private String content;
     private String data;
     private String variables;
-    private RunStatus status;
+    private Run.RunStatus status;
 
     public Run toEntity() {
         return Run.builder()

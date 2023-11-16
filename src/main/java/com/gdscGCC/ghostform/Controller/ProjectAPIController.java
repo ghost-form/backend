@@ -2,7 +2,6 @@ package com.gdscGCC.ghostform.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gdscGCC.ghostform.Dto.Ask.AskListRequestDto;
-import com.gdscGCC.ghostform.Dto.Ask.CsvAskResponseDto;
 import com.gdscGCC.ghostform.Dto.ChatGPT.ChatGPTResponseDto;
 import com.gdscGCC.ghostform.Dto.Project.ProjectRequestDto;
 import com.gdscGCC.ghostform.Dto.Project.ProjectResponseDto;
@@ -12,7 +11,6 @@ import com.gdscGCC.ghostform.Dto.Run.RunResponseDto;
 import com.gdscGCC.ghostform.Entity.Ask;
 import com.gdscGCC.ghostform.Entity.Project;
 import com.gdscGCC.ghostform.Entity.Run;
-import com.gdscGCC.ghostform.Entity.RunStatus;
 import com.gdscGCC.ghostform.Service.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
-import javax.swing.text.html.Option;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
@@ -141,7 +138,7 @@ public class ProjectAPIController {
     public ResponseEntity<RunResponseDto> addRun(@PathVariable Long project_id, @RequestBody RunRequestDto requestDto) {
         Project project = projectService.findByIdGetProject(project_id);
         requestDto.setProject(project);
-        requestDto.setStatus(RunStatus.START);
+        requestDto.setStatus(Run.RunStatus.START);
         Run run = requestDto.toEntity();
         project.addRun(run);
         runService.save(run);
@@ -161,7 +158,7 @@ public class ProjectAPIController {
             for (String question : questions) {
                 RunRequestDto requestDto = new RunRequestDto();
                 requestDto.setProject(p);
-                requestDto.setStatus(RunStatus.START);
+                requestDto.setStatus(Run.RunStatus.START);
                 requestDto.setVariables(project.getVariables());
                 requestDto.setData("");
                 requestDto.setContent(question);
@@ -185,10 +182,10 @@ public class ProjectAPIController {
         List<ChatGPTResponseDto> answerList = new ArrayList<>();
         for (RunRequestDto request : runListDto.getRuns()) {
             Run run = runService.getRunById(request.getId());
-            run.setStatus(RunStatus.RUNNING);
+            run.setStatus(Run.RunStatus.RUNNING);
             String question = run.getContent();
             answerList.add(chatGPTService.askQuestion(question));
-            run.setStatus(RunStatus.END);
+            run.setStatus(Run.RunStatus.END);
         }
         return ResponseEntity.status(HttpStatus.OK).body(answerList);
     }

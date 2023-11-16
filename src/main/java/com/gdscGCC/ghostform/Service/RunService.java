@@ -1,7 +1,6 @@
 package com.gdscGCC.ghostform.Service;
 
 import com.gdscGCC.ghostform.Entity.Run;
-import com.gdscGCC.ghostform.Entity.RunStatus;
 import com.gdscGCC.ghostform.Repository.RunRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class RunService {
     }
 
     @Transactional
-    public void setState(Run run, RunStatus status) {
+    public void setState(Run run, Run.RunStatus status) {
         run.setStatus(status);
     }
 

@@ -1,7 +1,6 @@
 package com.gdscGCC.ghostform.Dto.Run;
 
 import com.gdscGCC.ghostform.Entity.Run;
-import com.gdscGCC.ghostform.Entity.RunStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,7 +11,7 @@ public class RunResponseDto {
     private String content;
     private String data;
     private String variables;
-    private RunStatus status;
+    private Run.RunStatus status;
 
     public RunResponseDto(Run run) {
         this.id = run.getId();
