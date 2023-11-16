@@ -2,38 +2,33 @@ package com.gdscGCC.ghostform.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gdscGCC.ghostform.Dto.Ask.AskListRequestDto;
-import com.gdscGCC.ghostform.Dto.Ask.AskRequestDto;
 import com.gdscGCC.ghostform.Dto.Ask.CsvAskResponseDto;
 import com.gdscGCC.ghostform.Dto.ChatGPT.ChatGPTResponseDto;
 import com.gdscGCC.ghostform.Dto.Project.ProjectRequestDto;
 import com.gdscGCC.ghostform.Dto.Project.ProjectResponseDto;
+import com.gdscGCC.ghostform.Dto.Run.RunListDto;
 import com.gdscGCC.ghostform.Dto.Run.RunRequestDto;
 import com.gdscGCC.ghostform.Dto.Run.RunResponseDto;
 import com.gdscGCC.ghostform.Entity.Ask;
 import com.gdscGCC.ghostform.Entity.Project;
 import com.gdscGCC.ghostform.Entity.Run;
 import com.gdscGCC.ghostform.Entity.RunStatus;
-import com.gdscGCC.ghostform.Service.ChatGPTService;
-import com.gdscGCC.ghostform.Service.CsvService;
-import com.gdscGCC.ghostform.Service.ProjectService;
-import com.gdscGCC.ghostform.Service.RunService;
+import com.gdscGCC.ghostform.Service.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
+import javax.swing.text.html.Option;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -45,6 +40,7 @@ public class ProjectAPIController {
     private final ChatGPTService chatGPTService;
     private final RunService runService;
     private final CsvService csvService;
+    private final FileService fileService;
 
 
     /** 한 개의 프로젝트 조회 */
@@ -132,6 +128,7 @@ public class ProjectAPIController {
         return ResponseEntity.status(HttpStatus.OK).body(projectService.findById(project_id));
     }
 
+    /** project의 run list를 겨옴 */
     @GetMapping("/{project_id}/run")
     public ResponseEntity<List<Run>> getRunList(@PathVariable Long project_id) {
         ProjectResponseDto responseDto = projectService.findById(project_id);
@@ -139,28 +136,61 @@ public class ProjectAPIController {
         return ResponseEntity.status(HttpStatus.OK).body(runs);
     }
 
+    /** run 한개를 추가함 */
     @PostMapping("/{project_id}/run")
     public ResponseEntity<RunResponseDto> addRun(@PathVariable Long project_id, @RequestBody RunRequestDto requestDto) {
         Project project = projectService.findByIdGetProject(project_id);
         requestDto.setProject(project);
         requestDto.setStatus(RunStatus.START);
         Run run = requestDto.toEntity();
-        System.out.println(run.toString());
         project.addRun(run);
-        runService.save(requestDto);
+        runService.save(run);
         return ResponseEntity.status(HttpStatus.OK).body(new RunResponseDto(run));
     }
 
-    /*
+    /** csv 파일을 기반으로 run 여러개를 추가함 */
     @PostMapping("/{project_id}/upload-file")
-    public ResponseEntity<List<Run>> addRunList(@PathVariable Long project_id, @RequestParam MultipartFile multipartFile) {
+    public ResponseEntity<List<RunResponseDto>> addRunList(@PathVariable Long project_id, @RequestParam MultipartFile multipartFile, HttpServletRequest request) {
         try {
-            CsvAskResponseDto csvAskResponseDto = csvService.read((FileInputStream) multipartFile.getInputStream());
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        } catch (IOException e) {
+            File file = fileService.save(multipartFile, request);
+            ProjectResponseDto project = projectService.findById(project_id);
+            Project p = projectService.findByIdGetProject(project_id);
+            List<String> questions = csvService.makeQuestions(new FileInputStream(file), project);
+
+            List<RunResponseDto> output = new ArrayList<>();
+            for (String question : questions) {
+                RunRequestDto requestDto = new RunRequestDto();
+                requestDto.setProject(p);
+                requestDto.setStatus(RunStatus.START);
+                requestDto.setVariables(project.getVariables());
+                requestDto.setData("");
+                requestDto.setContent(question);
+
+                Run run = requestDto.toEntity();
+                runService.save(run);
+
+                p.addRun(run);
+                output.add(new RunResponseDto(run));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(output);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-    */
+
+    /** Run 실행, run의 id만 필요 */
+    @PostMapping("/{project_id}/execute")
+    public ResponseEntity<List<ChatGPTResponseDto>> execute(@PathVariable Long project_id, @RequestBody RunListDto runListDto) {
+        List<ChatGPTResponseDto> answerList = new ArrayList<>();
+        for (RunRequestDto request : runListDto.getRuns()) {
+            Run run = runService.getRunById(request.getId());
+            run.setStatus(RunStatus.RUNNING);
+            String question = run.getContent();
+            answerList.add(chatGPTService.askQuestion(question));
+            run.setStatus(RunStatus.END);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(answerList);
+    }
 
 }
