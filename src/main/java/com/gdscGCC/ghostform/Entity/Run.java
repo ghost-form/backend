@@ -37,6 +37,5 @@ public class Run {
         START,
         RUNNING,
         END
-
     }
 }

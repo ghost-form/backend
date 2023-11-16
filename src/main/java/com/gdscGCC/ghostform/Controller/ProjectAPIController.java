@@ -16,12 +16,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,8 +50,10 @@ public class ProjectAPIController {
 
     /** 모든 프로젝트 조회 */
     @GetMapping("/all")
-    public List<Project> projectListGet(){
-        return projectService.findAll();
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<ProjectResponseDto>> projectListGet(@PageableDefault(size = 5) Pageable pageable){
+
+        return ResponseEntity.status(HttpStatus.OK).body(projectService.findAll(pageable));
     }
 
     /** 한 개의 프로젝트 생성 */
@@ -67,8 +71,14 @@ public class ProjectAPIController {
     /** 한 개의 프로젝트 수정 */
     @PutMapping("/{project_id}")
     public ResponseEntity<ProjectResponseDto> projectUpdate(@PathVariable Long project_id, @RequestBody ProjectRequestDto requestDto){
-        System.out.println("id는!!! : " + project_id);
         return ResponseEntity.status(HttpStatus.OK).body(projectService.update(project_id, requestDto));
+    }
+
+    /** 프로젝트 공개범위 변경
+     * RequestParameter로 변경할 visibility를 받아옴 */
+    @PutMapping("/{project_id}/visibility")
+    public ResponseEntity<String> updateVisibility(@PathVariable Long project_id, @RequestParam String visibility){
+        return ResponseEntity.status(HttpStatus.OK).body(projectService.updateVisibility(project_id, visibility));
     }
 
     /** ChatGPT로부터 Stream 형태의 답변 받아오기 */

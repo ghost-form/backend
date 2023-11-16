@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -20,6 +19,7 @@ public class ProjectResponseDto {
     private Long user_id;
     private LocalDateTime lastModifiedDate;
     private Long star;
+    private Project.Visibility visibility;
     private List<Run> runs;
 
     public ProjectResponseDto(Project project) {
@@ -32,6 +32,7 @@ public class ProjectResponseDto {
         this.user_id = project.getUser_id();
         this.star = project.getStar();
         this.runs = project.getRun();
+        this.visibility = project.getVisibility();
     }
 
 }
