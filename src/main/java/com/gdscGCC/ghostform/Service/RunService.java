@@ -1,7 +1,8 @@
 package com.gdscGCC.ghostform.Service;
 
-import com.gdscGCC.ghostform.Dto.Run.RunRequestDto;
+import com.gdscGCC.ghostform.Entity.Run;
 import com.gdscGCC.ghostform.Repository.RunRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +11,18 @@ import org.springframework.stereotype.Service;
 public class RunService {
     private final RunRepository runRepository;
 
-    public void save(RunRequestDto runRequestDto) {
-        runRepository.save(runRequestDto.toEntity());
+    public Run getRunById(Long id) {
+        return runRepository.getRunById(id).orElseThrow(() -> new RuntimeException("Not Found."));
+    }
+
+    @Transactional
+    public void save(Run run) {
+        runRepository.save(run);
+    }
+
+    @Transactional
+    public void setState(Run run, Run.RunStatus status) {
+        run.setStatus(status);
     }
 
 }

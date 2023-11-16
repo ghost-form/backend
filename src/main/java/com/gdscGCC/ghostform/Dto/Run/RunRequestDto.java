@@ -9,6 +9,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 public class RunRequestDto {
+    private Long id;
     private Project project;
     private String content;
     private String data;
