@@ -2,6 +2,7 @@ package com.gdscGCC.ghostform.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gdscGCC.ghostform.Dto.Ask.AskListRequestDto;
+import com.gdscGCC.ghostform.Dto.Ask.CsvAskResponseDto;
 import com.gdscGCC.ghostform.Dto.ChatGPT.ChatGPTResponseDto;
 import com.gdscGCC.ghostform.Dto.Project.ProjectRequestDto;
 import com.gdscGCC.ghostform.Dto.Project.ProjectResponseDto;
@@ -22,11 +23,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -159,29 +162,9 @@ public class ProjectAPIController {
     @PostMapping("/{project_id}/upload-file")
     public ResponseEntity<List<RunResponseDto>> addRunList(@PathVariable Long project_id, @RequestParam MultipartFile multipartFile, HttpServletRequest request) {
         try {
-            File file = fileService.save(multipartFile, request);
-            ProjectResponseDto project = projectService.findById(project_id);
-            Project p = projectService.findByIdGetProject(project_id);
-            List<String> questions = csvService.makeQuestions(new FileInputStream(file), project);
-
-            List<RunResponseDto> output = new ArrayList<>();
-            for (String question : questions) {
-                RunRequestDto requestDto = new RunRequestDto();
-                requestDto.setProject(p);
-                requestDto.setStatus(Run.RunStatus.START);
-                requestDto.setVariables(project.getVariables());
-                requestDto.setData("");
-                requestDto.setContent(question);
-
-                Run run = requestDto.toEntity();
-                runService.save(run);
-
-                p.addRun(run);
-                output.add(new RunResponseDto(run));
-            }
-
-            return ResponseEntity.status(HttpStatus.OK).body(output);
-        } catch (Exception e) {
+            CsvAskResponseDto csvAskResponseDto = csvService.read((FileInputStream) multipartFile.getInputStream());
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
